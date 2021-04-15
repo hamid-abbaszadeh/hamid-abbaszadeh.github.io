@@ -13,4 +13,4 @@ Skilled using C, C++, JAVA and other programming languages to complete work. Exc
 
 ### Contact me
 
-[email@domain.com](mailto:hamid.abbaszadeh.mail@gmail.com.com)
+[hamid.abbaszadeh.mail@gmail.com](mailto:hamid.abbaszadeh.mail@gmail.com)
