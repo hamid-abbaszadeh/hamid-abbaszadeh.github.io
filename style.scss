@@ -22,6 +22,11 @@ body {
   font: 18px/1.4 $helvetica;
   color: $darkGray;
 }
+.flex-container {
+  display: flex;
+  background-color: DodgerBlue;
+  justify-content: space-between;
+}
 
 .container {
   margin: 0 auto;
