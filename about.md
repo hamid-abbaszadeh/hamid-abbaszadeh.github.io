@@ -2,14 +2,15 @@
 layout: page
 title: About
 permalink: /about/
+published: true
 ---
 
 Some information about you!
 
 ### More Information
 
-A place to include any other types of information that you'd like to include about yourself.
+Skilled using C, C++, JAVA and other programming languages to complete work. Excellent analytical, mathematical, and problem solving skills. Highly organized and detail-oriented professional with 6+ years of progressive experience in this field.
 
 ### Contact me
 
-[email@domain.com](mailto:email@domain.com)
+[email@domain.com](mailto:hamid.abbaszadeh.mail@gmail.com.com)
