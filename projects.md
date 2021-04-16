@@ -1,7 +1,7 @@
 ## A New Post
 
 <div class="flex-container">
-  <div>1</div>
-  <div>2</div>
-  <div>3</div>  
+  <div>Next you can update your site name, avatar and other options using the _config.yml file in the root of your repository (shown below).</div>
+  <div>Next you can update your site name, avatar and other options using the _config.yml file in the root of your repository (shown below).</div>
+  <div>Next you can update your site name, avatar and other options using the _config.yml file in the root of your repository (shown below).</div>  
 </div>
