@@ -1,7 +1,7 @@
 ---
 published: true
 ---
-<!DOCTYPE html>
+
 <html>
 
 <head>
