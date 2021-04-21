@@ -18,9 +18,12 @@ html {
 }
 
 body {
-	background: $white;
-  font: 18px/1.4 $helvetica;
-  color: rgba(0,0,0,.75);
+	color: rgba(0,0,0,.75);
+    font-size: 16px;
+    font-family: Lato,Helvetica Neue,Helvetica,sans-serif;
+    font-variant-ligatures: common-ligatures;
+    line-height: 1.67;
+    -webkit-font-smoothing: antialiased;
 }
 .flex-container {
   display: flex;
