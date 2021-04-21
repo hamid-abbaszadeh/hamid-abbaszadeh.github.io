@@ -1,9 +1,7 @@
 ---
 published: true
 ---
-<a href="http://google.com.au/" rel="some text">
-![Benjamin Bannekat](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/blog.png)
-  </a>
+![Benjamin Bannekat (https://google.com)](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/blog.png)
 # Trees in C++ 
 >**What is Binary Tree?**  
 A tree whose elements have **at most 2 children** is called a binary tree. Since each element in a binary tree can have only 2 children, we typically name them the left and right child.
