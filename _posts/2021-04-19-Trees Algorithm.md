@@ -111,14 +111,12 @@ Preorder traversal is used to create a copy of the tree. Preorder traversal is a
 >Uses of Preorder  
 Preorder traversal is used to create a copy of the tree. Preorder traversal is also used to get prefix expression on of an expression tree.
 
-```
+
 Algorithm Inorder(tree)
-   1. Traverse the left subtree, i.e., call Inorder(left-subtree)
-   2. Visit the root.
+   1.{: .square-block} Traverse the left subtree, i.e., call Inorder(left-subtree)
+   {: .square-block}2. Visit the root.
    3. Traverse the right subtree, i.e., call Inorder(right-subtree)
-   {: .square-block}
-```
-{: .square-block}
+   {:.square-block}
 
 ```cpp
 // C++ program for different tree traversals
@@ -172,13 +170,13 @@ int main()
 	return 0;
 }
 ```
-```
+
 Algorithm Preorder(tree)
-   1. Visit the root.
-   2. Traverse the left subtree, i.e., call Preorder(left-subtree)
+   1.{: .square-block} Visit the root.
+   {: .square-block}2. Traverse the left subtree, i.e., call Preorder(left-subtree)
    3. Traverse the right subtree, i.e., call Preorder(right-subtree)
 {: .square-block}
-```
+
 
 
 ```cpp
