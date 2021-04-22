@@ -1,8 +1,13 @@
 ---
 title: Machine and Deep Learning for Stock Price Prediction
-description: Comparison of treating stock price prediction as a classification or regression problem. This report formed part of my 3rd research project at the University of Leeds.
+description: >-
+  Comparison of treating stock price prediction as a classification or
+  regression problem. This report formed part of my 3rd research project at the
+  University of Leeds.
 layout: project_page
+published: true
 ---
+[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/blog.png)](https://hamid-abbaszadeh.github.io/Trees-Algorithm/)
 > The objective of this report is to compare the use of classification models and regression models from Machine and Deep Learning are used to predict the price trend of a stock. For the corresponding Github repository click [here](https://github.com/henriwoodcock/Stock-Price-Prediction). You can also view the <b>full</b> report which formed part of my degree as a pdf [here][3001].
 
 [3001]:{{ site.url }}/downloads/Henri-Woodcock-Math3001.pdf
