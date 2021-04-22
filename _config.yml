@@ -86,6 +86,9 @@ exclude:
   - README.md
   - CNAME
 
-projects:
+collections:
+  projects:
     output: true
-    permalink: /projects/
+    permalink: /:collection/:title
+    order:
+      - 2021-04-23-test.md
