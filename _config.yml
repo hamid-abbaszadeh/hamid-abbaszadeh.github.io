@@ -92,4 +92,4 @@ collections:
     permalink: /:collection/:title
     order:
       - 2020-03-21-stock-price-prediction-project.md
-      - 2021-04-23-your-filename.md
+      - 2020-04-05-Autoencoders-best-practices.md
