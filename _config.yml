@@ -88,4 +88,4 @@ exclude:
 
 projects:
     output: true
-    permalink: /:collection/:title
+    permalink: /projects/
