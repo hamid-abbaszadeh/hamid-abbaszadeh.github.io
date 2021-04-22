@@ -294,15 +294,14 @@ int main()
 **Breadth First Traversal:**
 1 2 3 4 5
 
->**Implementation Algorithm:**
->printLevelorder(tree)
+>### Implementation Algorithm:
+>##### printLevelorder(tree)
 >1. Create an empty queue q
 >1. temp_node = root /*start from root*/
 >1. Loop while temp_node is not NULL
-    a) print temp_node->data.
-    b) Enqueue temp_node’s children 
-      (first left then right children) to q
-    c) Dequeue a node from q.
+	1. print temp_node->data.
+	1. Enqueue temp_node’s children (first left then right children) to q
+	1. Dequeue a node from q.
  {: .square-block}
 
 
