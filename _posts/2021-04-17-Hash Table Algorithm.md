@@ -3,10 +3,8 @@ published: true
 ---
 [![Benjamin Bannekat](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post2.jpg)](https://hamid-abbaszadeh.github.io/Hash-Table-Algorithm/)
 # Hash Table 
->The official name is unordered associative containers and
->bucket  is another name of index 
-
->In  [hashing](http://www.geeksforgeeks.org/hashing-data-structure/)  there is a hash function that maps keys to some values. But these hashing function may lead to collision that is two or more keys are mapped to same value.  **Chain hashing**  avoids collision. The idea is to make each cell of hash table point to a linked list of records that have same hash function value.
+>The official name is *unordered associative containers* and bucket is another name of index. 
+>In hashing there is a hash function that maps keys to some values. But these hashing function may lead to collision that is two or more keys are mapped to same value.  **Chain hashing**  avoids collision. The idea is to make each cell of hash table point to a linked list of records that have same hash function value.
 >Let’s create a hash function, such that our hash table has ‘N’ number of buckets.  
 To insert a node into the hash table, we need to find the hash index for the given key. And it could be calculated using the hash function.  
 **Example: hashIndex = key % noOfBuckets**
