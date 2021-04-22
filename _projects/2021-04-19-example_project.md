@@ -5,7 +5,7 @@ layout: project_page
 published: true
 ---
 ---
-title: Example Project
+title: Example
 description: This is an example project.
 layout: project_page
 ---
