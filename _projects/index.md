@@ -1,3 +1,4 @@
-## A New Post
-
-Enter text in [Markdown](http://daringfireball.net/projects/markdown/). Use the toolbar above, or click the **?** button for formatting help.
+{% for project in site.projects %}
+  <h2> {{ project.title }} </h2>
+  <p>{{ project.description }}</p>
+{% endfor %}
