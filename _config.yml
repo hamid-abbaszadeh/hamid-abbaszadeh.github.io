@@ -88,3 +88,8 @@ exclude:
 
 collections:
   - projects
+  
+  collections:
+  projects:
+    output: true
+    permalink: /:collection/:title
