@@ -296,9 +296,9 @@ int main()
 
 >**Implementation Algorithm:**
 >printLevelorder(tree)
->1) Create an empty queue q
->2) temp_node = root /*start from root*/
->3) Loop while temp_node is not NULL
+>1. Create an empty queue q
+>1. temp_node = root /*start from root*/
+>1. Loop while temp_node is not NULL
     a) print temp_node->data.
     b) Enqueue temp_node’s children 
       (first left then right children) to q
