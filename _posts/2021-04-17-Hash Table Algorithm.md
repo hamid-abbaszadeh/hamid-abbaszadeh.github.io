@@ -2,243 +2,239 @@
 published: true
 ---
 ![Benjamin Bannekat](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/blog.png)
-<html>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome file</title>
-  <link rel="stylesheet" href="https://stackedit.io/style.css" />
-</head>
+# Hash Table 
+>The official name is unordered associative containers and
+>bucket  is another name of index 
 
-<body class="stackedit">
-  <div class="stackedit__html"><h1 id="hash-table">Hash Table</h1>
-<blockquote>
-<p>The official name is unordered associative containers and<br>
-bucket  is another name of index</p>
-</blockquote>
-<blockquote>
-<p>In  <a href="http://www.geeksforgeeks.org/hashing-data-structure/">hashing</a>  there is a hash function that maps keys to some values. But these hashing function may lead to collision that is two or more keys are mapped to same value.  <strong>Chain hashing</strong>  avoids collision. The idea is to make each cell of hash table point to a linked list of records that have same hash function value.<br>
-Let’s create a hash function, such that our hash table has ‘N’ number of buckets.<br>
-To insert a node into the hash table, we need to find the hash index for the given key. And it could be calculated using the hash function.<br>
-<strong>Example: hashIndex = key % noOfBuckets</strong><br>
-<strong>Insert</strong>: Move to the bucket corresponds to the above calculated hash index and insert the new node at the end of the list.<br>
-<strong>Delete</strong>: To delete a node from hash table, calculate the hash index for the key, move to the bucket corresponds to the calculated hash index, search the list in the current bucket to find and remove the node with the given key (if found).</p>
-</blockquote>
-<p><strong>Hash table implementation for classic C++</strong></p>
-<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token comment">// CPP program to implement hashing with chaining</span>
-<span class="token macro property">#<span class="token directive keyword">include</span><span class="token string">&lt;bits/stdc++.h&gt;</span></span>
-<span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
+>In  [hashing](http://www.geeksforgeeks.org/hashing-data-structure/)  there is a hash function that maps keys to some values. But these hashing function may lead to collision that is two or more keys are mapped to same value.  **Chain hashing**  avoids collision. The idea is to make each cell of hash table point to a linked list of records that have same hash function value.
+>Let’s create a hash function, such that our hash table has ‘N’ number of buckets.  
+To insert a node into the hash table, we need to find the hash index for the given key. And it could be calculated using the hash function.  
+**Example: hashIndex = key % noOfBuckets**
+>**Insert**: Move to the bucket corresponds to the above calculated hash index and insert the new node at the end of the list.
+>**Delete**: To delete a node from hash table, calculate the hash index for the key, move to the bucket corresponds to the calculated hash index, search the list in the current bucket to find and remove the node with the given key (if found).
 
-<span class="token keyword">class</span> <span class="token class-name">Hash</span>
-<span class="token punctuation">{</span>
-	<span class="token keyword">int</span> BUCKET<span class="token punctuation">;</span> <span class="token comment">// No. of buckets</span>
 
-	<span class="token comment">// Pointer to an array containing buckets</span>
-	list<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span> <span class="token operator">*</span>table<span class="token punctuation">;</span>
-<span class="token keyword">public</span><span class="token operator">:</span>
-	<span class="token function">Hash</span><span class="token punctuation">(</span><span class="token keyword">int</span> V<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Constructor</span>
+**Hash table implementation for classic C++**
 
-	<span class="token comment">// inserts a key into hash table</span>
-	<span class="token keyword">void</span> <span class="token function">insertItem</span><span class="token punctuation">(</span><span class="token keyword">int</span> x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+```cpp
+// CPP program to implement hashing with chaining
+#include<bits/stdc++.h>
+using namespace std;
 
-	<span class="token comment">// deletes a key from hash table</span>
-	<span class="token keyword">void</span> <span class="token function">deleteItem</span><span class="token punctuation">(</span><span class="token keyword">int</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+class Hash
+{
+	int BUCKET; // No. of buckets
 
-	<span class="token comment">// hash function to map values to key</span>
-	<span class="token keyword">int</span> <span class="token function">hashFunction</span><span class="token punctuation">(</span><span class="token keyword">int</span> x<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-		<span class="token keyword">return</span> <span class="token punctuation">(</span>x <span class="token operator">%</span> BUCKET<span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token punctuation">}</span>
+	// Pointer to an array containing buckets
+	list<int> *table;
+public:
+	Hash(int V); // Constructor
 
-	<span class="token keyword">void</span> <span class="token function">displayHash</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
+	// inserts a key into hash table
+	void insertItem(int x);
 
-Hash<span class="token operator">::</span><span class="token function">Hash</span><span class="token punctuation">(</span><span class="token keyword">int</span> b<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-	<span class="token keyword">this</span><span class="token operator">-</span><span class="token operator">&gt;</span>BUCKET <span class="token operator">=</span> b<span class="token punctuation">;</span>
-	table <span class="token operator">=</span> <span class="token keyword">new</span> list<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span><span class="token punctuation">[</span>BUCKET<span class="token punctuation">]</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+	// deletes a key from hash table
+	void deleteItem(int key);
 
-<span class="token keyword">void</span> Hash<span class="token operator">::</span><span class="token function">insertItem</span><span class="token punctuation">(</span><span class="token keyword">int</span> key<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-	<span class="token keyword">int</span> index <span class="token operator">=</span> <span class="token function">hashFunction</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
-	table<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+	// hash function to map values to key
+	int hashFunction(int x) {
+		return (x % BUCKET);
+	}
 
-<span class="token keyword">void</span> Hash<span class="token operator">::</span><span class="token function">deleteItem</span><span class="token punctuation">(</span><span class="token keyword">int</span> key<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-<span class="token comment">// get the hash index of key</span>
-<span class="token keyword">int</span> index <span class="token operator">=</span> <span class="token function">hashFunction</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	void displayHash();
+};
 
-<span class="token comment">// find the key in (inex)th list</span>
-list <span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span> <span class="token operator">::</span> iterator i<span class="token punctuation">;</span>
-<span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> table<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-		i <span class="token operator">!=</span> table<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">*</span>i <span class="token operator">==</span> key<span class="token punctuation">)</span>
-	<span class="token keyword">break</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+Hash::Hash(int b)
+{
+	this->BUCKET = b;
+	table = new list<int>[BUCKET];
+}
 
-<span class="token comment">// if key is found in hash table, remove it</span>
-<span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">!=</span> table<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-	table<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">erase</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+void Hash::insertItem(int key)
+{
+	int index = hashFunction(key);
+	table[index].push_back(key);
+}
 
-<span class="token comment">// function to display hash table</span>
-<span class="token keyword">void</span> Hash<span class="token operator">::</span><span class="token function">displayHash</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> BUCKET<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	cout <span class="token operator">&lt;&lt;</span> i<span class="token punctuation">;</span>
-	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">auto</span> x <span class="token operator">:</span> table<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
-	cout <span class="token operator">&lt;&lt;</span> <span class="token string">" --&gt; "</span> <span class="token operator">&lt;&lt;</span> x<span class="token punctuation">;</span>
-	cout <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+void Hash::deleteItem(int key)
+{
+// get the hash index of key
+int index = hashFunction(key);
 
-<span class="token comment">// Driver program</span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-<span class="token comment">// array that contains keys to be mapped</span>
-<span class="token keyword">int</span> a<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">15</span><span class="token punctuation">,</span> <span class="token number">11</span><span class="token punctuation">,</span> <span class="token number">27</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">12</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
-<span class="token keyword">int</span> n <span class="token operator">=</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token operator">/</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>a<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+// find the key in (inex)th list
+list <int> :: iterator i;
+for (i = table[index].begin();
+		i != table[index].end(); i++) {
+	if (*i == key)
+	break;
+}
 
-<span class="token comment">// insert the keys into the hash table</span>
-Hash <span class="token function">h</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 7 is count of buckets in</span>
-			<span class="token comment">// hash table</span>
-<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
-	h<span class="token punctuation">.</span><span class="token function">insertItem</span><span class="token punctuation">(</span>a<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+// if key is found in hash table, remove it
+if (i != table[index].end())
+	table[index].erase(i);
+}
 
-<span class="token comment">// delete 12 from hash table</span>
-h<span class="token punctuation">.</span><span class="token function">deleteItem</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+// function to display hash table
+void Hash::displayHash() {
+for (int i = 0; i < BUCKET; i++) {
+	cout << i;
+	for (auto x : table[i])
+	cout << " --> " << x;
+	cout << endl;
+}
+}
 
-<span class="token comment">// display the Hash table</span>
-h<span class="token punctuation">.</span><span class="token function">displayHash</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+// Driver program
+int main()
+{
+// array that contains keys to be mapped
+int a[] = {15, 11, 27, 8, 12};
+int n = sizeof(a)/sizeof(a[0]);
 
-<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+// insert the keys into the hash table
+Hash h(7); // 7 is count of buckets in
+			// hash table
+for (int i = 0; i < n; i++)
+	h.insertItem(a[i]);
 
-</code></pre>
-<p><strong>Hash table in C++ STL  (above C++11)</strong></p>
-<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token comment">// C++ program to demonstrate functionality of unordered_map</span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;iostream&gt;</span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;unordered_map&gt;</span></span>
-<span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
+// delete 12 from hash table
+h.deleteItem(12);
 
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-	<span class="token comment">// Declaring umap to be of &lt;string, int&gt; type</span>
-	<span class="token comment">// key will be of string type and mapped value will</span>
-	<span class="token comment">// be of int type</span>
-	unordered_map<span class="token operator">&lt;</span>string<span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token operator">&gt;</span> umap<span class="token punctuation">;</span>
+// display the Hash table
+h.displayHash();
 
-	<span class="token comment">// inserting values by using [] operator</span>
-	umap<span class="token punctuation">[</span><span class="token string">"GeeksforGeeks"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
-	umap<span class="token punctuation">[</span><span class="token string">"Practice"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">20</span><span class="token punctuation">;</span>
-	umap<span class="token punctuation">[</span><span class="token string">"Contribute"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">;</span>
+return 0;
+}
 
-	<span class="token comment">// Traversing an unordered map</span>
-	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">auto</span> x <span class="token operator">:</span> umap<span class="token punctuation">)</span>
-	cout <span class="token operator">&lt;&lt;</span> x<span class="token punctuation">.</span>first <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span> <span class="token operator">&lt;&lt;</span> x<span class="token punctuation">.</span>second <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+```
 
-<span class="token punctuation">}</span>
-</code></pre>
-<p><strong>Methods on unordered_map</strong><br>
-A lot of function are available which work on unordered_map. most useful of them are – operator =, operator [], empty and size for capacity, begin and end for iterator, find and count for lookup, insert and erase for modification.<br>
-The C++11 library also provides function to see internally used bucket count, bucket size and also used hash function and various hash policies but they are less useful in real application.<br>
-We can iterate over all elements of unordered_map using Iterator. Initialization, indexing and iteration is shown in below sample code :</p>
-<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token comment">// C++ program to demonstrate functionality of unordered_map</span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;iostream&gt;</span></span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;unordered_map&gt;</span></span>
-<span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
+**Hash table in C++ STL  (above C++11)**
 
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-	<span class="token comment">// Declaring umap to be of &lt;string, double&gt; type</span>
-	<span class="token comment">// key will be of string type and mapped value will</span>
-	<span class="token comment">// be of double type</span>
-	unordered_map<span class="token operator">&lt;</span>string<span class="token punctuation">,</span> <span class="token keyword">double</span><span class="token operator">&gt;</span> umap<span class="token punctuation">;</span>
+```cpp
+// C++ program to demonstrate functionality of unordered_map
+#include <iostream>
+#include <unordered_map>
+using namespace std;
 
-	<span class="token comment">// inserting values by using [] operator</span>
-	umap<span class="token punctuation">[</span><span class="token string">"PI"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">3.14</span><span class="token punctuation">;</span>
-	umap<span class="token punctuation">[</span><span class="token string">"root2"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.414</span><span class="token punctuation">;</span>
-	umap<span class="token punctuation">[</span><span class="token string">"root3"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.732</span><span class="token punctuation">;</span>
-	umap<span class="token punctuation">[</span><span class="token string">"log10"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">2.302</span><span class="token punctuation">;</span>
-	umap<span class="token punctuation">[</span><span class="token string">"loge"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1.0</span><span class="token punctuation">;</span>
+int main()
+{
+	// Declaring umap to be of <string, int> type
+	// key will be of string type and mapped value will
+	// be of int type
+	unordered_map<string, int> umap;
 
-	<span class="token comment">// inserting value by insert function</span>
-	umap<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token function">make_pair</span><span class="token punctuation">(</span><span class="token string">"e"</span><span class="token punctuation">,</span> <span class="token number">2.718</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	// inserting values by using [] operator
+	umap["GeeksforGeeks"] = 10;
+	umap["Practice"] = 20;
+	umap["Contribute"] = 30;
 
-	string key <span class="token operator">=</span> <span class="token string">"PI"</span><span class="token punctuation">;</span>
+	// Traversing an unordered map
+	for (auto x : umap)
+	cout << x.first << " " << x.second << endl;
 
-	<span class="token comment">// If key not found in map iterator to end is returned</span>
-	<span class="token keyword">if</span> <span class="token punctuation">(</span>umap<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span> <span class="token operator">==</span> umap<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-		cout <span class="token operator">&lt;&lt;</span> key <span class="token operator">&lt;&lt;</span> <span class="token string">" not found\n\n"</span><span class="token punctuation">;</span>
+}
+```
+**Methods on unordered_map**  
+A lot of function are available which work on unordered_map. most useful of them are – operator =, operator [], empty and size for capacity, begin and end for iterator, find and count for lookup, insert and erase for modification.  
+The C++11 library also provides function to see internally used bucket count, bucket size and also used hash function and various hash policies but they are less useful in real application.  
+We can iterate over all elements of unordered_map using Iterator. Initialization, indexing and iteration is shown in below sample code :
+```cpp
+// C++ program to demonstrate functionality of unordered_map
+#include <iostream>
+#include <unordered_map>
+using namespace std;
 
-	<span class="token comment">// If key found then iterator to that key is returned</span>
-	<span class="token keyword">else</span>
-		cout <span class="token operator">&lt;&lt;</span> <span class="token string">"Found "</span> <span class="token operator">&lt;&lt;</span> key <span class="token operator">&lt;&lt;</span> <span class="token string">"\n\n"</span><span class="token punctuation">;</span>
+int main()
+{
+	// Declaring umap to be of <string, double> type
+	// key will be of string type and mapped value will
+	// be of double type
+	unordered_map<string, double> umap;
 
-	key <span class="token operator">=</span> <span class="token string">"lambda"</span><span class="token punctuation">;</span>
-	<span class="token keyword">if</span> <span class="token punctuation">(</span>umap<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span> <span class="token operator">==</span> umap<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-		cout <span class="token operator">&lt;&lt;</span> key <span class="token operator">&lt;&lt;</span> <span class="token string">" not found\n"</span><span class="token punctuation">;</span>
-	<span class="token keyword">else</span>
-		cout <span class="token operator">&lt;&lt;</span> <span class="token string">"Found "</span> <span class="token operator">&lt;&lt;</span> key <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+	// inserting values by using [] operator
+	umap["PI"] = 3.14;
+	umap["root2"] = 1.414;
+	umap["root3"] = 1.732;
+	umap["log10"] = 2.302;
+	umap["loge"] = 1.0;
 
-	<span class="token comment">// iterating over all value of umap</span>
-	unordered_map<span class="token operator">&lt;</span>string<span class="token punctuation">,</span> <span class="token keyword">double</span><span class="token operator">&gt;</span><span class="token operator">::</span> iterator itr<span class="token punctuation">;</span>
-	cout <span class="token operator">&lt;&lt;</span> <span class="token string">"\nAll Elements : \n"</span><span class="token punctuation">;</span>
-	<span class="token keyword">for</span> <span class="token punctuation">(</span>itr <span class="token operator">=</span> umap<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> itr <span class="token operator">!=</span> umap<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> itr<span class="token operator">++</span><span class="token punctuation">)</span>
-	<span class="token punctuation">{</span>
-		<span class="token comment">// itr works as a pointer to pair&lt;string, double&gt;</span>
-		<span class="token comment">// type itr-&gt;first stores the key part and</span>
-		<span class="token comment">// itr-&gt;second stroes the value part</span>
-		cout <span class="token operator">&lt;&lt;</span> itr<span class="token operator">-</span><span class="token operator">&gt;</span>first <span class="token operator">&lt;&lt;</span> <span class="token string">" "</span> <span class="token operator">&lt;&lt;</span> itr<span class="token operator">-</span><span class="token operator">&gt;</span>second <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
-	<span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+	// inserting value by insert function
+	umap.insert(make_pair("e", 2.718));
 
-</code></pre>
-<p><strong>A practical problem based on unordered_map</strong> – given a string of words, find frequencies of individual words.</p>
-<pre><code>Input :  str = "geeks for geeks geeks quiz practice qa for";
+	string key = "PI";
+
+	// If key not found in map iterator to end is returned
+	if (umap.find(key) == umap.end())
+		cout << key << " not found\n\n";
+
+	// If key found then iterator to that key is returned
+	else
+		cout << "Found " << key << "\n\n";
+
+	key = "lambda";
+	if (umap.find(key) == umap.end())
+		cout << key << " not found\n";
+	else
+		cout << "Found " << key << endl;
+
+	// iterating over all value of umap
+	unordered_map<string, double>:: iterator itr;
+	cout << "\nAll Elements : \n";
+	for (itr = umap.begin(); itr != umap.end(); itr++)
+	{
+		// itr works as a pointer to pair<string, double>
+		// type itr->first stores the key part and
+		// itr->second stroes the value part
+		cout << itr->first << " " << itr->second << endl;
+	}
+}
+
+```
+**A practical problem based on unordered_map** – given a string of words, find frequencies of individual words.
+
+```
+Input :  str = "geeks for geeks geeks quiz practice qa for";
 Output : Frequencies of individual words are
    (practice, 1)
    (for, 2)
    (qa, 1)
    (quiz, 1)
    (geeks, 3)
-</code></pre>
-<pre class=" language-cpp"><code class="prism  language-cpp"><span class="token comment">// C++ program to find freq of every word using</span>
-<span class="token comment">// unordered_map</span>
-<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;bits/stdc++.h&gt;</span></span>
-<span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
+```
+```cpp
+// C++ program to find freq of every word using
+// unordered_map
+#include <bits/stdc++.h>
+using namespace std;
 
-<span class="token comment">// Prints frequencies of individual words in str</span>
-<span class="token keyword">void</span> <span class="token function">printFrequencies</span><span class="token punctuation">(</span><span class="token keyword">const</span> string <span class="token operator">&amp;</span>str<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-	<span class="token comment">// declaring map of &lt;string, int&gt; type, each word</span>
-	<span class="token comment">// is mapped to its frequency</span>
-	unordered_map<span class="token operator">&lt;</span>string<span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token operator">&gt;</span> wordFreq<span class="token punctuation">;</span>
+// Prints frequencies of individual words in str
+void printFrequencies(const string &str)
+{
+	// declaring map of <string, int> type, each word
+	// is mapped to its frequency
+	unordered_map<string, int> wordFreq;
 
-	<span class="token comment">// breaking input into word using string stream</span>
-	stringstream <span class="token function">ss</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Used for breaking words</span>
-	string word<span class="token punctuation">;</span> <span class="token comment">// To store individual words</span>
-	<span class="token keyword">while</span> <span class="token punctuation">(</span>ss <span class="token operator">&gt;&gt;</span> word<span class="token punctuation">)</span>
-		wordFreq<span class="token punctuation">[</span>word<span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+	// breaking input into word using string stream
+	stringstream ss(str); // Used for breaking words
+	string word; // To store individual words
+	while (ss >> word)
+		wordFreq[word]++;
 
-	<span class="token comment">// now iterating over word, freq pair and printing</span>
-	<span class="token comment">// them in &lt;, &gt; format</span>
-	unordered_map<span class="token operator">&lt;</span>string<span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token operator">&gt;</span><span class="token operator">::</span> iterator p<span class="token punctuation">;</span>
-	<span class="token keyword">for</span> <span class="token punctuation">(</span>p <span class="token operator">=</span> wordFreq<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> p <span class="token operator">!=</span> wordFreq<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> p<span class="token operator">++</span><span class="token punctuation">)</span>
-		cout <span class="token operator">&lt;&lt;</span> <span class="token string">"("</span> <span class="token operator">&lt;&lt;</span> p<span class="token operator">-</span><span class="token operator">&gt;</span>first <span class="token operator">&lt;&lt;</span> <span class="token string">", "</span> <span class="token operator">&lt;&lt;</span> p<span class="token operator">-</span><span class="token operator">&gt;</span>second <span class="token operator">&lt;&lt;</span> <span class="token string">")\n"</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+	// now iterating over word, freq pair and printing
+	// them in <, > format
+	unordered_map<string, int>:: iterator p;
+	for (p = wordFreq.begin(); p != wordFreq.end(); p++)
+		cout << "(" << p->first << ", " << p->second << ")\n";
+}
 
-<span class="token comment">// Driver code</span>
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-	string str <span class="token operator">=</span> <span class="token string">"geeks for geeks geeks quiz "</span>
-				<span class="token string">"practice qa for"</span><span class="token punctuation">;</span>
-	<span class="token function">printFrequencies</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-</code></pre>
-</div>
-</body>
+// Driver code
+int main()
+{
+	string str = "geeks for geeks geeks quiz "
+				"practice qa for";
+	printFrequencies(str);
+	return 0;
+}
+```
 
-</html>
