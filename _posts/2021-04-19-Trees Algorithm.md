@@ -177,7 +177,8 @@ Algorithm Preorder(tree)
    1. Visit the root.
    2. Traverse the left subtree, i.e., call Preorder(left-subtree)
    3. Traverse the right subtree, i.e., call Preorder(right-subtree)
- ```
+{: .square-block}
+```
 
 
 ```cpp
