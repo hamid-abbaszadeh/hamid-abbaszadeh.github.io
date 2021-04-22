@@ -86,6 +86,6 @@ exclude:
   - README.md
   - CNAME
 
- projects:
+projects:
     output: true
     permalink: /:collection/:title
