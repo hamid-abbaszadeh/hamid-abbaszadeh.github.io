@@ -31,14 +31,6 @@ body {
 }
 
 
-.square-block {
-  background-color: #efefef;
-  padding: 7px 7px 7px 10px;
-  /*margin: 20px 0 20px 0;*/
-}
-
-
-
 .container {
   margin: 0 auto;
   max-width: 740px;
@@ -288,6 +280,11 @@ nav {
 //=================================================
 
 
+.square-block {
+  background-color: #efefef;
+  padding: 7px 0px 7px 0px;
+  /*margin: 20px 0 20px 0;*/
+}
 
 
 //=================================================
