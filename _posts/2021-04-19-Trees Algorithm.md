@@ -294,8 +294,8 @@ int main()
 **Breadth First Traversal:**
 1 2 3 4 5
 
->### Implementation Algorithm:
->##### printLevelorder(tree)
+>### Implementation Algorithm.
+>printLevelorder(tree)
 >1. Create an empty queue q
 >1. temp_node = root /*start from root*/
 >1. Loop while temp_node is not NULL
