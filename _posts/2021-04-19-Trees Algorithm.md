@@ -169,13 +169,13 @@ int main()
 	return 0;
 }
 ```
-```
-Algorithm Preorder(tree)
-   1. Visit the root.
-   2. Traverse the left subtree, i.e., call Preorder(left-subtree)
-   3. Traverse the right subtree, i.e., call Preorder(right-subtree)
+
+>### Algorithm Preorder(tree)
+  > 1. Visit the root.
+  > 2. Traverse the left subtree, i.e., call Preorder(left-subtree)
+  > 3. Traverse the right subtree, i.e., call Preorder(right-subtree)
 {: .square-block}
-```
+
 
 
 ```cpp
@@ -229,12 +229,13 @@ int main()
 	return 0;
 }
 ```
-```
-Algorithm Postorder(tree)
-   1. Traverse the left subtree, i.e., call Postorder(left-subtree)
-   2. Traverse the right subtree, i.e., call Postorder(right-subtree)
-   3. Visit the root.
- ```
+
+>### Algorithm Postorder(tree)
+   >1. Traverse the left subtree, i.e., call Postorder(left-subtree)
+   >2. Traverse the right subtree, i.e., call Postorder(right-subtree)
+   >3. Visit the root.
+ {: .square-block}
+ 
 ```cpp
 // C++ program for different tree traversals
 #include <iostream>
@@ -293,16 +294,17 @@ int main()
 **Breadth First Traversal:**
 1 2 3 4 5
 
-**Implementation Algorithm:**
-```printLevelorder(tree)
-1) Create an empty queue q
-2) temp_node = root /*start from root*/
-3) Loop while temp_node is not NULL
+>**Implementation Algorithm:**
+>printLevelorder(tree)
+>1) Create an empty queue q
+>2) temp_node = root /*start from root*/
+>3) Loop while temp_node is not NULL
     a) print temp_node->data.
     b) Enqueue temp_node’s children 
       (first left then right children) to q
     c) Dequeue a node from q.
-```
+ {: .square-block}
+
 
 
 ```cpp
