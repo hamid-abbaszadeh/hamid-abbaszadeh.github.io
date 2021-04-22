@@ -2,7 +2,6 @@
 published: true
 ---
 [![Benjamin Bannekat](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/blog.png)](https://hamid-abbaszadeh.github.io/Hash-Table-Algorithm/)
-
 # Hash Table 
 >The official name is unordered associative containers and
 >bucket  is another name of index 
