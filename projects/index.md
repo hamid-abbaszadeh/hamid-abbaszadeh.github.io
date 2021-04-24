@@ -1,13 +1,21 @@
 ---
 title: Projects
 permalink: /projects/
+published: true
 ---
+<div class="posts">
+  {% for post in site.posts %}
+    <article class="post">
+<div>
+      <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
 
-{% for project in site.projects %}
-  <h2>
-    <a href="{{ project.url }}">
-      {{ project.title }}
-      </a>
-  </h2>
-  <p>{{ project.description }}</p>
-{% endfor %}
+      <div class="entry">
+        {{ post.excerpt }}
+      </div>
+
+      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
+      
+      </div>
+    </article>
+  {% endfor %}
+</div>
