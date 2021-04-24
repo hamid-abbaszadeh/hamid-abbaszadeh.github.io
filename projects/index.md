@@ -11,7 +11,6 @@ published: true
       {{ project.title }}
       </a>
   </h2>
-  
   		<div class="entry">
         {{ project.excerpt }}
       	</div>
