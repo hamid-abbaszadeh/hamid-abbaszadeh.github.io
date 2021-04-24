@@ -3,9 +3,7 @@ title: Projects
 permalink: /projects/
 published: true
 ---
-<div class="posts">
   {% for post in site.project %}
-    <article class="post">
 <div>
       <h1><a href="{{ site.baseurl }}{{ project.url }}">{{ project.title }}</a></h1>
 
@@ -16,6 +14,4 @@ published: true
       <a href="{{ site.baseurl }}{{ project.url }}" class="read-more">Read More</a>
       
       </div>
-    </article>
   {% endfor %}
-</div>
