@@ -9,8 +9,8 @@ published: true
     <a href="{{ project.url }}">
       {{ project.title }}
       </a>
-          <p>{{ project.description }}</p>
   </h2>
+   <p>{{ project.description }}</p>
   <div class="entry">
         {{ project.excerpt }}
       </div>
