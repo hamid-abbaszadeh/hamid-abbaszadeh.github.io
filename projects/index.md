@@ -13,6 +13,6 @@ published: true
   </h2>
   <div class="entry">
         {{ project.excerpt }}
+        <p>{{ project.description }}</p>
       </div>
-      <p>{{ project.description }}</p>
 {% endfor %}
