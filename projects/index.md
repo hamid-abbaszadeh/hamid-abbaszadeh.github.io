@@ -11,8 +11,9 @@ published: true
       {{ project.title }}
       </a>
   </h2>
+   <p>{{ project.description }}</p>
   		<div class="entry">
         {{ project.excerpt }}
       	</div>
-   <p>{{ project.description }}</p>
+  
 {% endfor %}
