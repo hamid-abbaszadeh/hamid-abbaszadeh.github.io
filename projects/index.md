@@ -4,7 +4,6 @@ permalink: /projects/
 published: true
 ---
 
-  
 {% for project in site.projects %}
   <h2>
     <a href="{{ project.url }}">
