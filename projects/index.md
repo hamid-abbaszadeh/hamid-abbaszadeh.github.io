@@ -14,4 +14,5 @@ published: true
   <div class="entry">
         {{ project.excerpt }}
       </div>
+      <p>{{ project.description }}</p>
 {% endfor %}
