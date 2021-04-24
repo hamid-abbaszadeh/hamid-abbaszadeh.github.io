@@ -1,8 +1,14 @@
 ---
 layout: project_page
 title: Applying Modern Best Practices to Autoencoders
-description: This project applies best modern practices found in other areas of image research to autoencoders. Comparing 5 models which proved effective in other areas of image research.
+description: >-
+  This project applies best modern practices found in other areas of image
+  research to autoencoders. Comparing 5 models which proved effective in other
+  areas of image research.
+published: true
 ---
+image:[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)](https://hamid-abbaszadeh.github.io/Trees-Algorithm/)
+
 > This project applies best modern practices found in other areas of image research to autoencoders. For the corresponding Github repository click [here](https://github.com/henriwoodcock/Applying-Modern-Best-Practices-to-Autoencoders).
 
 # Contents
