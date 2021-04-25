@@ -28,5 +28,3 @@ Bidirectional Iterator
 
 random_access_iterator_tag
 Random-access Iterator
-
-
