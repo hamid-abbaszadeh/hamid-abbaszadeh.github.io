@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 ---
 
 ![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/shortest/step1.png)
@@ -19,6 +19,3 @@ published: false
 
 
 ![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/shortest/step77.png)
-
-
-
