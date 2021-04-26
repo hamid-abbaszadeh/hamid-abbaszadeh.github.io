@@ -1,1 +1,6 @@
 hi
+Definition and Usage
+
+The form attribute specifies the form the text area belongs to.
+
+The value of this attribute must be equal to the id attribute of a <form> element in the same document.
