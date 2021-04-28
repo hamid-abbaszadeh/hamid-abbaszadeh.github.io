@@ -7,11 +7,9 @@ published: true
 >You can rename the current file by clicking the file name in the navigation bar or by clicking the **Rename** button in the file explorer.
 {: .square-block}
 
+<div>
 ## auto
-{: .square-block-orange}
 You can rename the current file by clicking the file name in the navigation bar or by clicking the **Rename** button in the file explorer.
-{: .square-block-orange}
-
 ```cpp
 struct node
 {
@@ -20,7 +18,8 @@ struct node
 	struct node* right;
 };
 ```
-{: .square-block-orange}
+</div>
+  {: .square-block-orange}
 
 >## auto
 >You can rename the current file by clicking the file name in the navigation bar or by clicking the **Rename** button in the file explorer.
