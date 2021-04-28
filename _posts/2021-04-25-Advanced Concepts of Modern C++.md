@@ -10,3 +10,8 @@ published: true
 >## auto
 >You can rename the current file by clicking the file name in the navigation bar or by clicking the **Rename** button in the file explorer.
 {: .square-block}
+
+>## auto
+>You can rename the current file by clicking the file name in the navigation bar or by clicking the **Rename** button in the file explorer.
+
+
