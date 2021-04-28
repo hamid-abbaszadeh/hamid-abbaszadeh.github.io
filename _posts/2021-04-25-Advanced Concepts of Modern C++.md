@@ -3,4 +3,6 @@ published: true
 ---
 [![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)](https://hamid-abbaszadeh.github.io/Trees-Algorithm/)
 
-Enter text in [Markdown](http://daringfireball.net/projects/markdown/). Use the toolbar above, or click the **?** button for formatting help.
+>## auto
+>You can rename the current file by clicking the file name in the navigation bar or by clicking the **Rename** button in the file explorer.
+{: .square-block}
