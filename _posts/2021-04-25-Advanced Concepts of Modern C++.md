@@ -16,7 +16,7 @@ published: true
 >	struct node* left;
 >	struct node* right;
 >};
->```
+>```{: .square-block-orange}
   {: .square-block-orange}
 
 >## auto
