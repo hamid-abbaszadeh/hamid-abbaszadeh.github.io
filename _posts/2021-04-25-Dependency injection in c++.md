@@ -1,7 +1,7 @@
 ---
 published: true
 ---
-[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)](https://hamid-abbaszadeh.github.io/Trees-Algorithm/)
+[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post7.jpg)](https://hamid-abbaszadeh.github.io/Trees-Algorithm/)
 
 The usefulness of Dependency Injection is in that the implementation of a class is more flexible and independent by decreasing the amount of coupling between a client and another service. The exact decoupling is the removal of a client class’s dependency on the implementation of an interface, instead requiring the implementation to be passed in.
 
@@ -140,9 +140,3 @@ Pumping gas at gas station
 Car needs more gasoline!
 Pumping gas from fuel can
 ```
-
-
-
-
-
-
