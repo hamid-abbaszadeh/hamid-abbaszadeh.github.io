@@ -1,7 +1,7 @@
 ---
 published: true
 ---
-[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/TimelineCpp.png)](https://hamid-abbaszadeh.github.io/Trees-Algorithm/)
+[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post8.jpg)](https://hamid-abbaszadeh.github.io/Trees-Algorithm/)
 
 ![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/modern.png)
 
@@ -314,6 +314,3 @@ published: true
 >};
 >```
   {: .square-block-orange}
-
-
-
