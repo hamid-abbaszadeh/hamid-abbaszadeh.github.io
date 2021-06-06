@@ -6,6 +6,7 @@ published: true
 ---
 
 Some information about you!
+![](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/mylinkedin.png)
 
 ![Benjamin Bannekat](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/cv.jpg)
 
