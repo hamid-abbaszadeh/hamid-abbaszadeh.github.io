@@ -1,6 +1,6 @@
 ---
 layout: project_page
-title: Applying Modern Best Practices to Autoencoders
+title: SearchEngine Application in C++
 description: >-
   This project applies best modern practices found in other areas of image
   research to autoencoders. Comparing 5 models which proved effective in other
