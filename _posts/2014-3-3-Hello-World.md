@@ -1,6 +1,6 @@
 ---
 layout: post
-title: FFT algorithm implementation for surface detection systems.
+title: system v IPC vs POSIX IPC
 published: true
 ---
 
