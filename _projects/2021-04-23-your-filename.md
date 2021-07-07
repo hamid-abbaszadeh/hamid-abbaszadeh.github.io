@@ -8,7 +8,7 @@ layout: project_page
 published: true
 ---
 
-[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)](https://hamid-abbaszadeh.github.io/projects/Autoencoders-best-practices)
+[![Benjamin Bannekat ](https://upload.wikimedia.org/wikipedia/commons/2/2b/Seven_segment_display-animated.gif)
 
 > This project applies best modern practices found in other areas of image research to autoencoders. For the corresponding Github repository click [here](https://github.com/henriwoodcock/Applying-Modern-Best-Practices-to-Autoencoders).
 
