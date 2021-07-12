@@ -6,13 +6,12 @@ published: true
 ---
 
 Some information about you!
-![](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/mylinkedin.png)
+[![](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/mylinkedin.png)](https://www.linkedin.com/in/hamid-abbaszadeh-535749115/)
 
-![Benjamin Bannekat](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/cv.jpg)
 
 ### More Information
 
-Skilled using C, C++, JAVA and other programming languages to complete work. Excellent analytical, mathematical, and problem solving skills. Highly organized and detail-oriented professional with 6+ years of progressive experience in this field.
+I am a C/C++ Developer with 7+ years of experience in research and development of high-tech payment systems, with strong emphasis on Software architecture and Object Oriented methodologies for elegant design, component reuse, performance, extensibility, maintainability and testability.
 
 ### Contact me
 
