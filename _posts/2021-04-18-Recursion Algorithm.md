@@ -1,7 +1,7 @@
 ---
 published: true
 ---
-[![Benjamin Bannekat](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post10.jpg)](https://hamid-abbaszadeh.github.io/Recursion-Algorithm/)
+[![Benjamin Bannekat](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post8.jpg)](https://hamid-abbaszadeh.github.io/Recursion-Algorithm/)
 # Recursion 
 >**What is Recursion?**  
 The process in which a function calls itself directly or indirectly is called recursion and the corresponding function is called as recursive function. Using recursive algorithm, certain problems can be solved quite easily.
