@@ -1,5 +1,5 @@
 ---
-title: Shortest path Algorithm
+title: Pathfinding project in c++
 description: This project uses
 layout: project_page
 published: true
