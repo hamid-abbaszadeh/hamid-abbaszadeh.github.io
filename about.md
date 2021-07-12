@@ -5,7 +5,6 @@ permalink: /about/
 published: true
 ---
 
-Some information about you!
 [![](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/mylinkedin.png)](https://www.linkedin.com/in/hamid-abbaszadeh-535749115/)
 
 
