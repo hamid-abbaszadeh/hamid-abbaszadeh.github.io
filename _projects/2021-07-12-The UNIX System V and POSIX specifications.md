@@ -5,30 +5,8 @@ layout: project_page
 published: true
 ---
 
-[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)](https://hamid-abbaszadeh.github.io/projects/Autoencoders-best-practices)
+[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)](https://hamid-abbaszadeh.github.io/projects/The-UNIX-System-V-and-POSIX-specifications)
 
-> This project applies best modern practices found in other areas of image research to autoencoders. For the corresponding Github repository click [here](https://github.com/henriwoodcock/Applying-Modern-Best-Practices-to-Autoencoders).
+> Some recent tasks at work highlighted some obvious gaps in my working knowledge of Linux inter-process communication (IPC). I spent some personal time brushing up on things I had used before and learning about some mechanisms that I had not used before. I am not discussing pipes or sockets here; I am discussing message queues, semaphores, and shared memory. The System V and POSIX specifications have different APIs for using basically the same three IPC mechanisms. I am not exploring every nuance or feature of each API and I am not comparing performance. My goal was simply to demonstrate each IPC mechanism for each API in a set of very simple programs. I show the programs side by side where appropriate, but the code is also available in [here](https://github.com/hamid-abbaszadeh/Linux-inter-process-communication-IPC).
 
-# Contents
-- [Introduction](#introduction)
-- Initializing Program Variables
-  - Checking Arguments
-  - Initialising Memory Size
-- Initialising Structs
-  - Map Initialisation
-  - Explaining trie struct
-  - Initialising the Trie
-- Input Manager
- - Search functionality
-   - Search per document
-   - Search per word
-    - Search Implementation Part1
-    - Heap Implementation
-    - Search Implementation Part2
-    
-  
-# Introduction
-Search Engines are powered by various algorithms.For the past few decades, people from all around the world were sharing, posting and gaining information through the Internet. So we need technology to help us effectively search for the information we need. Thankfully we have it, and we call it a  **Search Engine**. In this project i want to implement a mini search engine by _**Trie Algorithm**_.
-[Trie](http://en.wikipedia.org/wiki/Trie) is an efficient information retrieval data structure. Using Trie, search complexities can be brought to optimal limit (key length). If we store keys in binary search tree, a well balanced BST will need time proportional to **M * log N**, where M is maximum string length and N is number of keys in tree. Using Trie, we can search the key in **O(M)** time.
- 
- ![](       )
+
