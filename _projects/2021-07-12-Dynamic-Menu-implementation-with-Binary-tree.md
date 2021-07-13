@@ -5,21 +5,15 @@ layout: project_page
 published: true
 ---
 
-[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)](https://hamid-abbaszadeh.github.io/projects/Autoencoders-best-practices)
+[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)]()
 
-> This project applies best modern practices found in other areas of image research to autoencoders. For the corresponding Github repository click [here](https://github.com/henriwoodcock/Applying-Modern-Best-Practices-to-Autoencoders).
+> Actually this is a part of a big project that i have ever done.in this part i tend to focus on menu structure. I believe that it's very helpful because it includes many useful algorithms.
 
 # Contents
-- [Introduction](#introduction)
-- Initializing Program Variables
-  - Checking Arguments
-  - Initialising Memory Size
-- Initialising Structs
-  - Map Initialisation
-  - Explaining trie struct
-  - Initialising the Trie
-- Input Manager
- - Search functionality
+- initializing module
+- Binary tree module
+- Menu module 
+- Search functionality
    - Search per document
    - Search per word
     - Search Implementation Part1
