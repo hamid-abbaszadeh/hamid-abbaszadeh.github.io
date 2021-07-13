@@ -5,7 +5,7 @@ layout: project_page
 published: true
 ---
 
-[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)](https://hamid-abbaszadeh.github.io/projects/SearchEngine-Application-in-C++)
+[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/trie.jpg)](https://hamid-abbaszadeh.github.io/projects/SearchEngine-Application-in-C++)
 
 > For the corresponding Github repository click [here](https://github.com/hamid-abbaszadeh/MiniSearchEngine-CPP).
 
