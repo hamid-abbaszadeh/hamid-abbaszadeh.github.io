@@ -8,9 +8,9 @@ layout: project_page
 published: true
 ---
 
-[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)](https://hamid-abbaszadeh.github.io/projects/Autoencoders-best-practices)
+[![Benjamin Bannekat ](https://raw.githubusercontent.com/hamid-abbaszadeh/hamid-abbaszadeh.github.io/master/images/post1.jpg)](https://hamid-abbaszadeh.github.io/projects/SearchEngine-Application-in-C++)
 
-> This project applies best modern practices found in other areas of image research to autoencoders. For the corresponding Github repository click [here](https://github.com/henriwoodcock/Applying-Modern-Best-Practices-to-Autoencoders).
+> For the corresponding Github repository click [here](https://github.com/hamid-abbaszadeh/MiniSearchEngine-CPP).
 
 # Contents
 - [Introduction](#introduction)
