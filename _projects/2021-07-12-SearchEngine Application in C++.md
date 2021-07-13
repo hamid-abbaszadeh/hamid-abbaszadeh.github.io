@@ -1,9 +1,6 @@
 ---
 title: SearchEngine Application in C++
-description: >-
-  This project uses neural networks to classify flood defence assets and
-  achieves an accuracy of 90%. Clustering is then used to extend this with
-  underlying asset attributes.
+description: In this project i want to implement a mini search engine by Trie Algorithm
 layout: project_page
 published: true
 ---
