@@ -1,6 +1,8 @@
 ---
 title: Dynamic-Menu-implementation-with-Binary-tree
-description: This project uses
+description: >-
+  Actually this is a part of a big project that i have ever done.in this part i
+  tend to focus on menu structure.
 layout: project_page
 published: true
 ---
@@ -12,5 +14,4 @@ published: true
 # Contents
 - initializing module
 - Binary tree module
-- Menu module 
-
+- Menu module
