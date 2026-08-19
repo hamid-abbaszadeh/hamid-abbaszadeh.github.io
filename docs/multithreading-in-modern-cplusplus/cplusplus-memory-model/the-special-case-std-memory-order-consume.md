@@ -1,0 +1,24 @@
+---
+layout: default
+title: "The Special Case std::memory_order_consume"
+parent: C++ Memory Model
+grand_parent: Multithreading
+nav_order: 14
+---
+
+# The Special Case std::memory_order_consume
+{: .no_toc }
+
+## Table of Contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+## 1. Overview
+
+_TODO: write introduction for "The Special Case std::memory_order_consume"._
+
+## 2. Details
+
+_TODO: expand this section._

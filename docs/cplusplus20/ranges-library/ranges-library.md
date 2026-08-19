@@ -1,0 +1,24 @@
+---
+layout: default
+title: Ranges Library
+parent: C++20
+nav_order: 3
+has_children: true
+---
+
+# Ranges Library
+{: .no_toc }
+
+## Table of Contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+## 1. Overview
+
+_TODO: write introduction for "Ranges Library"._
+
+## 2. Details
+
+_TODO: expand this section._
