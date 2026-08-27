@@ -1,13 +1,13 @@
 ---
 layout: default
-title: Overview
-parent: C++ Memory Model
-grand_parent: Multithreading
-nav_order: 1
+title: "<span style='color: #4ade80;'>Data structures</span>"
+nav_order: 112
+has_children: true
 ---
 
-# Overview
+# Templates
 {: .no_toc }
+
 
 ## Table of Contents
 {: .no_toc .text-delta }
@@ -17,7 +17,7 @@ nav_order: 1
 
 ## 1. Overview
 
-_TODO: write introduction for "Overview"._
+_TODO: write introduction for "Templates"._
 
 ## 2. Details
 

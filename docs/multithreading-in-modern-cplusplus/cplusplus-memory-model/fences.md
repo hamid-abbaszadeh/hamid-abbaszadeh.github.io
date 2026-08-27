@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Fences
+title: "<span style='color: #4ade80;'>Fences</span>"
 parent: C++ Memory Model
 grand_parent: Multithreading
 nav_order: 18

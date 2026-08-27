@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>C++ Threading Syntax — Call Flow Diagrams &amp; Full Examples</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#12181f; --grid:#1f2a36; --text:#d7e0ea; --text-dim:#8494a6;
+    --accent:#5ee3c7;
+    --a-color:#f4a93b; --b-color:#c8534f;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Mono',Consolas,monospace;padding:22px;}
+  .wrap{max-width:1060px;margin:0 auto;}
+  h1{font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);font-weight:500;margin:0 0 4px;}
+  h1 span{color:var(--accent);}
+  .sub{color:var(--text-dim);font-size:12.5px;max-width:700px;line-height:1.5;margin-bottom:16px;}
+  .tabs{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:14px;}
+  .tab{background:var(--panel);border:1px solid var(--grid);color:var(--text-dim);padding:7px 11px;font-size:10.5px;letter-spacing:.03em;cursor:pointer;text-transform:uppercase;}
+  .tab.active{background:var(--accent);color:#0b0f14;border-color:var(--accent);}
+  .panel{background:var(--panel);border:1px solid var(--grid);border-radius:3px;padding:18px 20px;}
+  .scenario h2{font-size:14px;color:var(--text);margin:0 0 4px;font-weight:600;}
+  .scenario .desc{color:var(--text-dim);font-size:12px;margin-bottom:14px;line-height:1.5;}
+  svg{display:block;width:100%;height:auto;background:#f7f5ef;border-radius:4px;}
+  ol.steps{margin:16px 0 4px;padding-left:0;list-style:none;counter-reset:step;}
+  ol.steps li{position:relative;padding:6px 0 6px 34px;font-size:12.5px;color:var(--text-dim);line-height:1.5;border-bottom:1px solid var(--grid);}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li b{color:var(--text);}
+  .num{position:absolute;left:0;top:6px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#0b0f14;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .note{margin-top:14px;padding:10px 14px;background:#0e141d;border-left:2px solid var(--accent);font-size:12px;color:var(--text-dim);line-height:1.55;}
+  .note b{color:var(--accent);}
+  code.inline{color:var(--accent);}
+  .codewrap{margin-top:16px;}
+  .toggle-code{background:#0e141d;border:1px solid var(--grid);color:var(--accent);padding:8px 14px;font-family:inherit;font-size:11.5px;letter-spacing:.05em;cursor:pointer;text-transform:uppercase;width:100%;text-align:left;border-radius:3px;}
+  .toggle-code:hover{border-color:var(--accent);}
+  pre.fullcode{margin:8px 0 0;padding:16px 18px;background:#080b0f;border:1px solid var(--grid);border-radius:3px;overflow-x:auto;font-size:12px;line-height:1.6;}
+  pre.fullcode code{white-space:pre;}
+  .c-comment{color:#5c6b7a;font-style:italic;}
+  .c-str{color:#e0c46c;}
+  .c-std{color:#5ee3c7;}
+  .c-kw{color:#f4a93b;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>C++ Threading Syntax <span>// call-flow diagrams + full examples</span></h1>
+  <div class="sub">Each tab: a call-flow diagram (same visual language as your reference), numbered steps, and a complete, realistic, compilable example you can expand.</div>
+  <div class="tabs" id="tabs"></div>
+  <div class="panel" id="panel"></div>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+function e(tag, attrs, text){
+  const el = document.createElementNS(NS, tag);
+  for(const k in attrs) el.setAttribute(k, attrs[k]);
+  if(text !== undefined) el.textContent = text;
+  return el;
+}
+function addDefs(svg, colors){
+  const defs = e('defs', {});
+  colors.forEach(c => {
+    const m = e('marker', {id:'arrow-'+c.id, markerWidth:9, markerHeight:9, refX:7, refY:4, orient:'auto'});
+    m.appendChild(e('path', {d:'M0,0 L8,4 L0,8 Z', fill:c.color}));
+    defs.appendChild(m);
+  });
+  svg.appendChild(defs);
+}
+function codeBox(svg, {x,y,w,title,titleColor,titleTextColor='#111',lines,bodyColor='#8fd0b9'}){
+  const titleH = 34, lineH = 22, pad = 10;
+  const h = titleH + lines.length*lineH + pad*2;
+  svg.appendChild(e('rect',{x,y,width:w,height:titleH,fill:titleColor,stroke:'#111','stroke-width':2.5}));
+  const t = e('text',{x:x+w/2,y:y+titleH/2+5,'text-anchor':'middle','font-size':13.5,'font-weight':700,fill:titleTextColor});
+  t.textContent = title;
+  svg.appendChild(t);
+  svg.appendChild(e('rect',{x,y:y+titleH,width:w,height:h-titleH,fill:bodyColor,stroke:'#111','stroke-width':2.5}));
+  lines.forEach((ln,i)=>{
+    const ty = y+titleH+pad+(i+0.72)*lineH;
+    const txt = e('text',{x:x+12,y:ty,'font-size':12.5,fill:'#111','font-family':'monospace'});
+    txt.textContent = ln;
+    svg.appendChild(txt);
+  });
+  return {
+    x,y,w,h,titleH,lineH,pad,
+    anchorRight:(i)=>({x:x+w, y:y+titleH+pad+(i+0.5)*lineH}),
+    anchorLeft:(i)=>({x, y:y+titleH+pad+(i+0.5)*lineH}),
+    anchorBottom:()=>({x:x+w/2, y:y+h}),
+    anchorTop:()=>({x:x+w/2, y})
+  };
+}
+function arrow(svg, p1, p2, color, dashed){
+  const id = color==='#f4a93b'?'a':color==='#c8534f'?'b':color==='#e0524a'?'blocked':'sh';
+  const el = e('path',{d:`M${p1.x},${p1.y} L${p2.x},${p2.y}`, stroke:color, 'stroke-width':3, fill:'none', 'marker-end':`url(#arrow-${id})`});
+  if(dashed) el.setAttribute('stroke-dasharray','7,5');
+  svg.appendChild(el);
+}
+
+/* ---- tiny syntax highlighter for the full-code blocks ---- */
+function highlight(code){
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  code = esc(code);
+  const pattern = /(\/\/[^\n]*)|("(?:[^"\\]|\\.)*")|(\bstd::[A-Za-z_][A-Za-z0-9_]*\b)|(\b(?:void|int|bool|double|float|long|char|class|struct|template|typename|return|if|else|while|for|do|using|namespace|const|auto|true|false|static|constexpr|public|private|protected|virtual|override|new|delete|try|catch|throw|switch|case|break|continue|sizeof|nullptr|this|thread_local|inline)\b)/g;
+  return code.replace(pattern, (m, comment, str, stdtok, kw) => {
+    if (comment) return `<span class="c-comment">${comment}</span>`;
+    if (str) return `<span class="c-str">${str}</span>`;
+    if (stdtok) return `<span class="c-std">${stdtok}</span>`;
+    if (kw) return `<span class="c-kw">${kw}</span>`;
+    return m;
+  });
+}
+
+function renderScenario(container, spec){
+  container.innerHTML = `<div class="scenario">
+    <h2>${spec.title}</h2>
+    <div class="desc">${spec.desc}</div>
+    <svg viewBox="0 0 1000 ${spec.svgH}"></svg>
+    <ol class="steps">${spec.steps.map((s,i)=>`<li><span class="num">${i+1}</span>${s}</li>`).join('')}</ol>
+    ${spec.note?`<div class="note">${spec.note}</div>`:''}
+    <div class="codewrap">
+      <button class="toggle-code">Show full compilable example \u25b8</button>
+      <pre class="fullcode" style="display:none"><code>${highlight(spec.fullCode.trim())}</code></pre>
+    </div>
+  </div>`;
+  const svg = container.querySelector('svg');
+  addDefs(svg,[{id:'a',color:'#f4a93b'},{id:'b',color:'#c8534f'},{id:'blocked',color:'#e0524a'},{id:'sh',color:'#5b6b7c'}]);
+  spec.draw(svg, codeBox, arrow);
+
+  const btn = container.querySelector('.toggle-code');
+  const pre = container.querySelector('.fullcode');
+  btn.addEventListener('click', () => {
+    const open = pre.style.display !== 'none';
+    pre.style.display = open ? 'none' : 'block';
+    btn.textContent = open ? 'Show full compilable example \u25b8' : 'Hide full compilable example \u25be';
+  });
+}
+
+const CN = ['\u2460','\u2461','\u2462','\u2463','\u2464','\u2465','\u2466','\u2467'];
+const scenarios = {};
+
+/* ================= 0. std::thread basics ================= */
+scenarios.thread_basics = {
+  tab: 'std::thread',
+  title: 'std::thread — creating, joining, detaching',
+  desc: 'The foundation everything else builds on: launching a function on a new OS thread, passing arguments, and the join-vs-detach decision.',
+  svgH: 420,
+  steps: [
+    '<b>Main</b> constructs <code class="inline">thread t1(worker, 1, 100)</code> — the function and its arguments are copied into the thread\'s storage, and it starts running <b>immediately</b>, not on join().',
+    'Main constructs <code class="inline">thread t2</code> from a lambda — also starts running concurrently right away.',
+    'Main calls <code class="inline">t2.detach()</code> — releases ownership. t2 keeps running independently; main can no longer join or observe it.',
+    'Main calls <code class="inline">t1.join()</code> — blocks until t1\'s function returns.',
+    'Inside the new thread, <code class="inline">worker(1, 100)</code> actually runs — with its own copies of the arguments passed at construction.'
+  ],
+  note: '<b>Forgetting</b> to either join() or detach() a joinable thread before its destructor runs calls <code class="inline">std::terminate()</code> and kills the whole program — this is the single most common std::thread bug (fixed by <code class="inline">jthread</code>, covered later).',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:320,title:'Main thread',titleColor:'#f4a93b',lines:[
+      'void main() {',
+      `  ${CN[0]} thread t1(worker, 1, 100);`,
+      `  ${CN[1]} thread t2(logger_task);`,
+      `  ${CN[2]} t2.detach();`,
+      `  ${CN[3]} t1.join();`,
+      '}'
+    ]});
+    const B = codeBox(svg,{x:665,y:60,w:320,title:'worker() — runs on t1',titleColor:'#c8534f',lines:[
+      'void worker(int id, int value) {',
+      `  ${CN[4]} process(id, value);`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:340,y:250,w:320,title:'thread facts',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'hardware_concurrency() -> sizing hint',
+      't2: detached, no longer joinable'
+    ]});
+    arrow(svg, A.anchorRight(1), B.anchorLeft(0), '#f4a93b');
+    arrow(svg, A.anchorRight(2), M.anchorTop(), '#f4a93b', true);
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+
+void worker(int id, int value) {
+    std::cout << "Worker " << id << " processing " << value << '\\n';
+}
+
+int main() {
+    unsigned n = std::thread::hardware_concurrency();
+    std::cout << n << " hardware threads available\\n";
+
+    std::thread t1(worker, 1, 100);      // args copied into the thread's storage
+
+    std::thread t2([] {
+        std::cout << "Detached logger running independently\\n";
+    });
+    t2.detach();                          // no longer joinable; runs on its own
+
+    if (t1.joinable()) t1.join();         // wait for t1 to finish
+
+    std::cout << "Main thread id: " << std::this_thread::get_id() << '\\n';
+}
+`
+};
+
+/* ================= 1. mutex + lock_guard ================= */
+scenarios.mutex = {
+  tab: 'mutex + lock_guard',
+  title: 'std::mutex — exclusive access with std::lock_guard',
+  desc: 'Two threads increment a shared counter. Thread A uses RAII (lock_guard); Thread B locks/unlocks manually so you can see the difference.',
+  svgH: 420,
+  steps: [
+    '<b>Thread A</b> constructs <code class="inline">lock_guard&lt;mutex&gt; lk(mtx)</code> — this calls <code class="inline">mtx.lock()</code> in the constructor.',
+    'A is now inside its critical section and safely increments <code class="inline">shared_counter</code>.',
+    'A\'s <code class="inline">lock_guard</code> goes out of scope → its destructor calls <code class="inline">mtx.unlock()</code> automatically, even if an exception was thrown.',
+    'Meanwhile <b>Thread B</b> called <code class="inline">mtx.lock()</code> directly. Since A already owned the mutex, B <b>blocks here</b> until step 3 completes.',
+    'B now owns the mutex and increments the counter.',
+    'B must remember to call <code class="inline">mtx.unlock()</code> itself — nothing releases it automatically if B forgets or an exception fires.'
+  ],
+  note: '<b>Takeaway:</b> lock_guard trades flexibility for safety — it can\'t unlock early or be default-constructed, but it can never leak a lock. Prefer it whenever the whole scope is the critical section.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:20,y:60,w:290,title:'Thread A',titleColor:'#f4a93b',lines:[
+      'void threadA() {',
+      `  ${CN[0]} lock_guard<mutex> lk(mtx);`,
+      `  ${CN[1]} shared_counter++;`,
+      `  ${CN[2]} // scope ends -> auto unlock`,
+      '}'
+    ]});
+    const B = codeBox(svg,{x:690,y:60,w:290,title:'Thread B',titleColor:'#c8534f',lines:[
+      'void threadB() {',
+      `  ${CN[3]} mtx.lock();`,
+      `  ${CN[4]} shared_counter++;`,
+      `  ${CN[5]} mtx.unlock();`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:365,y:150,w:270,title:'std::mutex mtx',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'state: unlocked',
+      '  -> owned by A  (1,2,3)',
+      '  -> owned by B  (4,5,6)'
+    ]});
+    arrow(svg, A.anchorRight(1), M.anchorLeft(1), '#f4a93b');
+    arrow(svg, M.anchorLeft(1), A.anchorRight(2), '#f4a93b');
+    arrow(svg, B.anchorLeft(1), M.anchorRight(1), '#c8534f', true);
+    arrow(svg, M.anchorRight(1), B.anchorLeft(2), '#c8534f');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+class Counter {
+public:
+    void incrementSafe() {
+        std::lock_guard<std::mutex> lk(mtx_);   // locks on construction
+        ++value_;
+    }                                            // unlocks here (RAII)
+
+    void incrementManual() {
+        mtx_.lock();
+        ++value_;
+        mtx_.unlock();                            // must remember this!
+    }
+
+    int value() const { return value_; }
+
+private:
+    std::mutex mtx_;
+    int value_ = 0;
+};
+
+int main() {
+    Counter counter;
+    std::thread a([&] { for (int i = 0; i < 100000; ++i) counter.incrementSafe(); });
+    std::thread b([&] { for (int i = 0; i < 100000; ++i) counter.incrementManual(); });
+    a.join();
+    b.join();
+    std::cout << "Final value: " << counter.value() << '\\n'; // always 200000
+}
+`
+};
+
+/* ================= 2. unique_lock ================= */
+scenarios.unique_lock = {
+  tab: 'unique_lock',
+  title: 'std::unique_lock — deferred, manual, and early-unlock control',
+  desc: 'unique_lock is the flexible RAII wrapper: you can delay locking, unlock mid-scope, and relock — none of which lock_guard allows.',
+  svgH: 460,
+  steps: [
+    '<b>Producer</b> constructs <code class="inline">unique_lock&lt;mutex&gt; lk(mtx, std::defer_lock)</code> — the mutex is <b>not</b> locked yet.',
+    'It does expensive prep work while the mutex stays free for anyone else.',
+    'It calls <code class="inline">lk.lock()</code> explicitly, now entering the critical section.',
+    'It pushes the prepared item onto the shared queue.',
+    'It calls <code class="inline">lk.unlock()</code> <b>before</b> the loop\'s next iteration, shrinking the critical section on purpose.',
+    'Loop repeats — prep work happens with the mutex free again.',
+    '<b>Consumer</b> (plain lock_guard) grabs the mutex whenever it\'s free and reads the queue.'
+  ],
+  note: '<b>lock_guard vs unique_lock:</b> unique_lock is heavier (it tracks ownership state at runtime) but is the only option that works with <code class="inline">std::condition_variable::wait</code>, which needs to unlock while sleeping and relock on wakeup.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:330,title:'Producer',titleColor:'#f4a93b',lines:[
+      'void producer() {',
+      `  ${CN[0]} unique_lock<mutex> lk(mtx, defer_lock);`,
+      `  ${CN[1]} int item = prepare();`,
+      `  ${CN[2]} lk.lock();`,
+      `  ${CN[3]} sharedQueue.push_back(item);`,
+      `  ${CN[4]} lk.unlock();`,
+      '}'
+    ]});
+    const B = codeBox(svg,{x:670,y:220,w:310,title:'Consumer',titleColor:'#c8534f',lines:[
+      'void consumer() {',
+      `  ${CN[6]} lock_guard<mutex> lk(mtx);`,
+      '     read(sharedQueue);',
+      '}'
+    ]});
+    const M = codeBox(svg,{x:355,y:60,w:290,title:'std::mutex mtx',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'unlocked  (during 1,2)',
+      'owned by producer  (during 3,4)',
+      'unlocked  (during 5,6)',
+      'owned by consumer  (during 7)'
+    ]});
+    arrow(svg, A.anchorRight(2), M.anchorLeft(1), '#f4a93b');
+    arrow(svg, A.anchorRight(4), M.anchorLeft(2), '#f4a93b');
+    arrow(svg, M.anchorLeft(2), A.anchorRight(4), '#f4a93b');
+    arrow(svg, B.anchorLeft(1), M.anchorLeft(3), '#c8534f');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <vector>
+#include <chrono>
+
+std::mutex mtx;
+std::vector<int> sharedQueue;
+
+void producer() {
+    std::unique_lock<std::mutex> lk(mtx, std::defer_lock); // not locked yet
+    for (int i = 0; i < 5; ++i) {
+        int item = i * i;                 // expensive prep work, done unlocked
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+        lk.lock();
+        sharedQueue.push_back(item);
+        lk.unlock();                       // release early, keep prep work outside the lock
+    }
+}
+
+void consumer() {
+    std::lock_guard<std::mutex> lk(mtx);
+    for (int v : sharedQueue) std::cout << v << ' ';
+    std::cout << '\\n';
+}
+
+int main() {
+    std::thread p(producer);
+    p.join();
+    consumer();
+}
+`
+};
+
+/* ================= 3. recursive_mutex ================= */
+scenarios.recursive = {
+  tab: 'recursive_mutex',
+  title: 'std::recursive_mutex — same thread, nested locking',
+  desc: 'A function that calls itself (or calls another function that also needs the lock) while already holding it — this is exactly the case that deadlocks a plain std::mutex.',
+  svgH: 400,
+  steps: [
+    '<b>Thread A</b> calls <code class="inline">logError()</code>, which locks the recursive mutex — internal owner count becomes <b>1</b>.',
+    'logError() calls log() internally.',
+    '<code class="inline">log()</code> locks the <b>same</b> recursive mutex from the <b>same thread</b> — this succeeds and count becomes <b>2</b>. (A plain <code class="inline">std::mutex</code> would block forever here.)',
+    'log() finishes and unlocks — count drops to <b>1</b>. The mutex is still considered locked.',
+    'logError() unlocks — count drops to <b>0</b>. Only now is the mutex actually free for other threads.'
+  ],
+  note: '<b>Rule of thumb:</b> needing recursive_mutex is often a sign the code\'s locking boundaries aren\'t clean. It solves self-deadlock, but a redesign that locks once at the outermost call is usually better.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:60,y:60,w:340,title:'Thread A: logger.logError()',titleColor:'#f4a93b',lines:[
+      'void logError(msg) {',
+      `  ${CN[0]} lock_guard<recursive_mutex> lk(mtx_);`,
+      `  ${CN[1]} log("[ERROR] " + msg);`,
+      '}'
+    ]});
+    const I = codeBox(svg,{x:600,y:60,w:340,title:'log() — same thread',titleColor:'#f4a93b',lines:[
+      'void log(msg) {',
+      `  ${CN[2]} lock_guard<recursive_mutex> lk(mtx_);`,
+      '     cout << msg;',
+      `  ${CN[3]} // scope ends, count 2->1`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:330,y:250,w:340,title:'std::recursive_mutex mtx_',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      `owner: Thread A   count: 1 -> 2 -> 1 -> 0  ${CN[4]}`
+    ]});
+    arrow(svg, A.anchorBottom(), M.anchorTop(), '#f4a93b');
+    arrow(svg, I.anchorBottom(), M.anchorTop(), '#f4a93b');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <string>
+
+class Logger {
+public:
+    void logError(const std::string& msg) {
+        std::lock_guard<std::recursive_mutex> lk(mtx_);
+        log("[ERROR] " + msg);      // calls log(), which locks again on the SAME thread
+    }
+
+    void log(const std::string& msg) {
+        std::lock_guard<std::recursive_mutex> lk(mtx_);  // re-entrant: succeeds, count 1->2
+        std::cout << msg << '\\n';
+    }
+
+private:
+    std::recursive_mutex mtx_;
+};
+
+int main() {
+    Logger logger;
+    std::thread t1([&] { logger.logError("disk full"); });
+    std::thread t2([&] { logger.log("startup complete"); });
+    t1.join();
+    t2.join();
+}
+`
+};
+
+/* ================= 4. timed_mutex ================= */
+scenarios.timed = {
+  tab: 'timed_mutex',
+  title: 'std::timed_mutex — give up instead of blocking forever',
+  desc: 'try_lock_for()/try_lock_until() let a thread bail out with a fallback plan instead of waiting indefinitely.',
+  svgH: 400,
+  steps: [
+    '<b>Thread A</b> locks the timed mutex and holds it for a long operation (simulated 2s critical section).',
+    '<b>Thread B</b> calls <code class="inline">dbLock.try_lock_for(500ms)</code> instead of <code class="inline">lock()</code>.',
+    '500ms pass and A still hasn\'t released — <code class="inline">try_lock_for</code> returns <b>false</b>.',
+    'B takes the <b>fallback branch</b> (queueing the request for later) instead of blocking.',
+    'A finally finishes and unlocks — but B already moved on and isn\'t waiting for it.'
+  ],
+  note: '<b>recursive_timed_mutex</b> combines this timeout behavior with the same-thread re-entry from the previous tab. <b>shared_timed_mutex</b> combines it with the reader/writer behavior in the next tab, via <code class="inline">try_lock_shared_for()</code>. <code class="inline">try_lock_until()</code> works identically but takes an absolute <code class="inline">time_point</code> instead of a duration.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:20,y:60,w:300,title:'Thread A',titleColor:'#f4a93b',lines:[
+      'void longQuery() {',
+      `  ${CN[0]} lock_guard<timed_mutex> lk(dbLock);`,
+      '     sleep_for(2s);  // simulate slow query',
+      '}'
+    ]});
+    const B = codeBox(svg,{x:680,y:60,w:300,title:'Thread B',titleColor:'#c8534f',lines:[
+      'void quickAttempt() {',
+      `  ${CN[1]} if (dbLock.try_lock_for(500ms)) {`,
+      '       // acquired',
+      '     } else {',
+      `  ${CN[3]}   queueForLater();  // gave up`,
+      '     }',
+      '}'
+    ]});
+    const M = codeBox(svg,{x:355,y:220,w:290,title:'std::timed_mutex dbLock',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'owned by A for ~2s',
+      `${CN[2]}  B\u2019s 500ms window expires first`
+    ]});
+    arrow(svg, A.anchorRight(1), M.anchorTop(), '#f4a93b');
+    arrow(svg, B.anchorLeft(1), M.anchorTop(), '#c8534f', true);
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <mutex>
+
+std::timed_mutex dbLock;
+
+void longQuery() {
+    std::lock_guard<std::timed_mutex> lk(dbLock);
+    std::this_thread::sleep_for(std::chrono::seconds(2));  // simulate slow query
+}
+
+void quickAttempt() {
+    using namespace std::chrono_literals;
+    if (dbLock.try_lock_for(500ms)) {
+        std::cout << "Got the connection\\n";
+        dbLock.unlock();
+    } else {
+        std::cout << "Timed out - queueing for later instead of blocking\\n";
+    }
+}
+
+int main() {
+    std::thread a(longQuery);
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    std::thread b(quickAttempt);
+    a.join();
+    b.join();
+}
+`
+};
+
+/* ================= 5. shared_mutex ================= */
+scenarios.shared = {
+  tab: 'shared_mutex',
+  title: 'std::shared_mutex — many readers, one writer',
+  desc: 'shared_lock lets any number of readers hold the mutex at once. unique_lock still means fully exclusive, used by writers.',
+  svgH: 460,
+  steps: [
+    '<b>Reader 1</b> takes a <code class="inline">shared_lock&lt;shared_mutex&gt;</code> — read access granted immediately.',
+    '<b>Reader 2</b> also takes a <code class="inline">shared_lock</code> <b>at the same time</b> — allowed, both read concurrently.',
+    '<b>Writer</b> requests a <code class="inline">unique_lock&lt;shared_mutex&gt;</code> — must wait for <b>both</b> readers to release.',
+    'Once both readers finish, the writer gets exclusive access — no readers or other writers can enter.',
+    'A new reader arriving during the write also has to wait, until the writer releases.'
+  ],
+  note: '<b>shared_timed_mutex</b> adds <code class="inline">try_lock_shared_for()</code> / <code class="inline">try_lock_for()</code> on top of this exact same reader/writer behavior.',
+  draw(svg, codeBox, arrow){
+    const R1 = codeBox(svg,{x:15,y:40,w:280,title:'Reader 1',titleColor:'#f4a93b',lines:[
+      'string get(int key) {',
+      `  ${CN[0]} shared_lock<shared_mutex> lk(mtx_);`,
+      '     return data_[key];',
+      '}'
+    ]});
+    const R2 = codeBox(svg,{x:15,y:220,w:280,title:'Reader 2',titleColor:'#f4a93b',lines:[
+      'string get(int key) {',
+      `  ${CN[1]} shared_lock<shared_mutex> lk(mtx_);`,
+      '     return data_[key];',
+      '}'
+    ]});
+    const W = codeBox(svg,{x:705,y:130,w:280,title:'Writer',titleColor:'#c8534f',lines:[
+      'void set(int key, string v) {',
+      `  ${CN[2]} unique_lock<shared_mutex> lk(mtx_);`,
+      `  ${CN[3]} data_[key] = v;`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:355,y:130,w:290,title:'std::shared_mutex mtx_',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'readers: 2 (R1, R2 concurrent)',
+      `${CN[4]} writer waits for readers = 0`
+    ]});
+    arrow(svg, R1.anchorRight(1), M.anchorLeft(0), '#f4a93b');
+    arrow(svg, R2.anchorRight(1), M.anchorLeft(1), '#f4a93b');
+    arrow(svg, W.anchorLeft(1), M.anchorRight(0), '#c8534f', true);
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <shared_mutex>
+#include <unordered_map>
+#include <vector>
+#include <string>
+
+class Cache {
+public:
+    std::string get(int key) {
+        std::shared_lock<std::shared_mutex> lk(mtx_);  // multiple readers OK
+        auto it = data_.find(key);
+        return it != data_.end() ? it->second : "";
+    }
+
+    void set(int key, std::string value) {
+        std::unique_lock<std::shared_mutex> lk(mtx_);   // exclusive
+        data_[key] = std::move(value);
+    }
+
+private:
+    std::shared_mutex mtx_;
+    std::unordered_map<int, std::string> data_;
+};
+
+int main() {
+    Cache cache;
+    cache.set(1, "hello");
+
+    std::vector<std::thread> readers;
+    for (int i = 0; i < 4; ++i)
+        readers.emplace_back([&] { std::cout << cache.get(1) << '\\n'; });
+
+    std::thread writer([&] { cache.set(1, "updated"); });
+
+    for (auto& r : readers) r.join();
+    writer.join();
+}
+`
+};
+
+/* ================= 6. scoped_lock ================= */
+scenarios.scoped = {
+  tab: 'scoped_lock',
+  title: 'std::scoped_lock — locking several mutexes without deadlocking',
+  desc: 'Two threads transfer money between the same pair of accounts, requesting the two mutexes in opposite order — the classic deadlock setup.',
+  svgH: 440,
+  steps: [
+    '<b>Thread A</b> constructs <code class="inline">scoped_lock lk(alice.mtx, bob.mtx)</code> — requests both mutexes together.',
+    '<b>Thread B</b> constructs <code class="inline">scoped_lock lk(bob.mtx, alice.mtx)</code> — the <b>same two mutexes, opposite order</b>.',
+    'Internally, scoped_lock runs a deadlock-avoidance algorithm (like <code class="inline">std::lock</code>): if it can\'t get all mutexes at once, it releases whatever it grabbed and retries.',
+    'One thread\'s scoped_lock succeeds fully and proceeds with the transfer.',
+    'The other\'s retries until it succeeds, right after the first releases both mutexes at scope exit.'
+  ],
+  note: '<b>Contrast:</b> manually writing <code class="inline">alice.mtx.lock(); bob.mtx.lock();</code> in A and the reverse order in B <i>would</i> deadlock. scoped_lock exists specifically to make that impossible.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:320,title:'Thread A: transfer(alice,bob)',titleColor:'#f4a93b',lines:[
+      'void transfer(a, b, amt) {',
+      `  ${CN[0]} scoped_lock lk(a.mtx, b.mtx);`,
+      '     a.balance -= amt;',
+      '     b.balance += amt;',
+      '}'
+    ]});
+    const B = codeBox(svg,{x:665,y:60,w:320,title:'Thread B: transfer(bob,alice)',titleColor:'#c8534f',lines:[
+      'void transfer(b, a, amt) {',
+      `  ${CN[1]} scoped_lock lk(b.mtx, a.mtx);`,
+      '     b.balance -= amt;',
+      '     a.balance += amt;',
+      '}'
+    ]});
+    const M = codeBox(svg,{x:330,y:230,w:340,title:'alice.mtx  +  bob.mtx',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      `${CN[2]} deadlock-avoidance algorithm arbitrates`,
+      'one thread proceeds, the other retries'
+    ]});
+    arrow(svg, A.anchorBottom(), M.anchorTop(), '#f4a93b');
+    arrow(svg, B.anchorBottom(), M.anchorTop(), '#c8534f');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+struct Account {
+    std::mutex mtx;
+    double balance;
+};
+
+void transfer(Account& from, Account& to, double amount) {
+    std::scoped_lock lk(from.mtx, to.mtx);  // locks both, deadlock-free order
+    from.balance -= amount;
+    to.balance += amount;
+}
+
+int main() {
+    Account alice{{}, 1000};
+    Account bob{{}, 500};
+
+    std::thread t1([&] { transfer(alice, bob, 100); });   // alice.mtx then bob.mtx
+    std::thread t2([&] { transfer(bob, alice, 50); });    // bob.mtx then alice.mtx - reversed!
+
+    t1.join();
+    t2.join();
+
+    std::cout << "Alice: " << alice.balance << ", Bob: " << bob.balance << '\\n';
+}
+`
+};
+
+/* ================= 7. call_once ================= */
+scenarios.call_once = {
+  tab: 'call_once',
+  title: 'std::call_once — thread-safe one-time initialization',
+  desc: 'Multiple threads race to initialize a shared resource, but the init function must run exactly once, no matter how many threads call it.',
+  svgH: 400,
+  steps: [
+    '<b>Thread A</b> calls <code class="inline">std::call_once(flag, init)</code> first. Since <code class="inline">flag</code> hasn\'t fired yet, A actually executes <code class="inline">init()</code>.',
+    'A proceeds to use the now-initialized resource.',
+    '<b>Thread B</b> calls <code class="inline">call_once(flag, init)</code> too — possibly while A is still inside init(). B <b>blocks</b> until A\'s call finishes.',
+    'Once A\'s init() completes, the flag is set. B\'s call_once returns immediately <b>without re-running init()</b>.',
+    'B proceeds straight to using the resource.'
+  ],
+  note: '<b>Classic use:</b> lazy singleton / lazy static initialization that\'s safe even if many threads call the accessor for the first time simultaneously — no manual mutex needed.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:20,y:60,w:300,title:'Thread A',titleColor:'#f4a93b',lines:[
+      'void threadA() {',
+      `  ${CN[0]} ensureInitialized();`,
+      `  ${CN[1]} use(*sharedConfig);`,
+      '}'
+    ]});
+    const B = codeBox(svg,{x:680,y:60,w:300,title:'Thread B',titleColor:'#c8534f',lines:[
+      'void threadB() {',
+      `  ${CN[2]} ensureInitialized();`,
+      `  ${CN[4]} use(*sharedConfig);`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:355,y:220,w:290,title:'once_flag initFlag',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'init() runs exactly once (by A)',
+      `${CN[3]} B waits, then skips init()`
+    ]});
+    arrow(svg, A.anchorRight(1), M.anchorTop(), '#f4a93b');
+    arrow(svg, B.anchorLeft(1), M.anchorTop(), '#c8534f', true);
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <vector>
+
+std::once_flag initFlag;
+int* sharedConfig = nullptr;
+
+void ensureInitialized() {
+    std::call_once(initFlag, [] {
+        std::cout << "Loading configuration...\\n";
+        sharedConfig = new int(42);           // runs exactly once
+    });
+}
+
+void worker(int id) {
+    ensureInitialized();
+    std::cout << "Thread " << id << " sees config = " << *sharedConfig << '\\n';
+}
+
+int main() {
+    std::vector<std::thread> threads;
+    for (int i = 0; i < 5; ++i) threads.emplace_back(worker, i);
+    for (auto& t : threads) t.join();
+    delete sharedConfig;
+}
+`
+};
+
+/* ================= 8. condition_variable ================= */
+scenarios.cv = {
+  tab: 'condition_variable',
+  title: 'std::condition_variable — wait() paired with unique_lock',
+  desc: 'Why condition_variable specifically requires unique_lock (not lock_guard): it needs to unlock while sleeping and relock on wakeup.',
+  svgH: 420,
+  steps: [
+    '<b>Producer</b> locks the mutex (lock_guard is fine here — full scope is the critical section), pushes an item, then the lock releases at the closing brace.',
+    'Producer calls <code class="inline">cv.notify_one()</code> — wakes one waiting thread, if any.',
+    '<b>Consumer</b> locks the mutex with <code class="inline">unique_lock</code> — required because wait() needs to manipulate the lock.',
+    '<code class="inline">cv.wait(lk, predicate)</code> atomically <b>unlocks</b> the mutex and sleeps. On wakeup it <b>re-locks</b> and re-checks the predicate — looping if it was a spurious wakeup.',
+    'Predicate is true (queue not empty) — consumer proceeds to pop and process, still holding the lock.'
+  ],
+  note: '<b>Why not lock_guard here:</b> lock_guard cannot unlock itself mid-scope, and wait() must release the mutex while the thread sleeps — otherwise no one could ever acquire it to push new data.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:300,title:'Producer',titleColor:'#f4a93b',lines:[
+      'void producer() {',
+      `  ${CN[0]} { lock_guard<mutex> lk(mtx);`,
+      '        buffer.push(x); }',
+      `  ${CN[1]} cv.notify_one();`,
+      '}'
+    ]});
+    const B = codeBox(svg,{x:685,y:60,w:300,title:'Consumer',titleColor:'#c8534f',lines:[
+      'void consumer() {',
+      `  ${CN[2]} unique_lock<mutex> lk(mtx);`,
+      `  ${CN[3]} cv.wait(lk, [] {`,
+      '       return !buffer.empty(); });',
+      `  ${CN[4]} process(buffer.pop());`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:355,y:230,w:290,title:'mutex mtx  +  condition_variable cv',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'wait(): unlock -> sleep -> wake -> relock'
+    ]});
+    arrow(svg, A.anchorRight(1), M.anchorTop(), '#f4a93b');
+    arrow(svg, A.anchorRight(3), B.anchorLeft(3), '#f4a93b', true);
+    arrow(svg, B.anchorLeft(2), M.anchorTop(), '#c8534f');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
+#include <chrono>
+
+std::mutex mtx;
+std::condition_variable cv;
+std::queue<int> buffer;
+bool done = false;
+
+void producer() {
+    for (int i = 0; i < 10; ++i) {
+        { std::lock_guard<std::mutex> lk(mtx); buffer.push(i); }
+        cv.notify_one();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    { std::lock_guard<std::mutex> lk(mtx); done = true; }
+    cv.notify_one();
+}
+
+void consumer() {
+    while (true) {
+        std::unique_lock<std::mutex> lk(mtx);
+        cv.wait(lk, [] { return !buffer.empty() || done; });
+        while (!buffer.empty()) {
+            std::cout << "Consumed: " << buffer.front() << '\\n';
+            buffer.pop();
+        }
+        if (done) break;
+    }
+}
+
+int main() {
+    std::thread p(producer), c(consumer);
+    p.join(); c.join();
+}
+`
+};
+
+/* ================= 9. notify_all / wait_for / condition_variable_any ================= */
+scenarios.cv_any = {
+  tab: 'notify_all / wait_for',
+  title: 'condition_variable — notify_all() and wait_for() with a timeout',
+  desc: 'Waking every waiter at once, and giving up on a wait after a deadline instead of sleeping forever.',
+  svgH: 420,
+  steps: [
+    '<b>Main</b> sets a shared shutdown flag under the lock, then calls <code class="inline">cv.notify_all()</code> — unlike notify_one(), this wakes <b>every</b> thread currently in wait().',
+    'Each <b>worker</b> locks with <code class="inline">unique_lock</code> as usual.',
+    'Each worker calls <code class="inline">cv.wait_for(lk, 200ms, pred)</code> — sleeps, but wakes itself if 200ms pass even without a notify, to print a heartbeat.',
+    'If the predicate became true before the timeout, wait_for returns <b>true</b> and the loop exits.',
+    'If the deadline passed first, it returns <b>false</b> and the worker logs a heartbeat and keeps waiting.'
+  ],
+  note: '<b>condition_variable_any</b> does the same job as condition_variable but works with <i>any</i> lockable type (e.g. <code class="inline">shared_lock</code>), not just <code class="inline">unique_lock&lt;mutex&gt;</code> — at the cost of extra overhead, so prefer plain condition_variable unless you specifically need that flexibility.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:300,title:'Main thread',titleColor:'#f4a93b',lines:[
+      'void main() {',
+      '     sleep_for(700ms);',
+      `  ${CN[0]} { lock_guard<mutex> lk(mtx);`,
+      '       shutdown = true; }',
+      '     cv.notify_all();  // wakes everyone',
+      '}'
+    ]});
+    const B = codeBox(svg,{x:685,y:60,w:300,title:'Worker 1..N',titleColor:'#c8534f',lines:[
+      'void worker(id) {',
+      `  ${CN[1]} unique_lock<mutex> lk(mtx);`,
+      '     while (!shutdown) {',
+      `  ${CN[2]}   cv.wait_for(lk, 200ms,`,
+      '           [] { return shutdown; });',
+      `  ${CN[4]}   heartbeat(id);`,
+      '     }',
+      '}'
+    ]});
+    const M = codeBox(svg,{x:355,y:270,w:290,title:'mutex mtx + condition_variable cv',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'notify_all() wakes ALL waiters',
+      'wait_for() self-wakes after 200ms'
+    ]});
+    arrow(svg, A.anchorRight(2), M.anchorTop(), '#f4a93b');
+    arrow(svg, M.anchorTop(), B.anchorLeft(3), '#c8534f');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <vector>
+#include <chrono>
+
+std::mutex mtx;
+std::condition_variable cv;
+bool shutdown = false;
+
+void worker(int id) {
+    std::unique_lock<std::mutex> lk(mtx);
+    while (!shutdown) {
+        bool signaled = cv.wait_for(lk, std::chrono::milliseconds(200),
+                                     [] { return shutdown; });
+        if (!signaled) {
+            std::cout << "Worker " << id << " heartbeat, still waiting\\n";
+        }
+    }
+    std::cout << "Worker " << id << " shutting down\\n";
+}
+
+int main() {
+    std::vector<std::thread> workers;
+    for (int i = 0; i < 3; ++i) workers.emplace_back(worker, i);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(700));
+    { std::lock_guard<std::mutex> lk(mtx); shutdown = true; }
+    cv.notify_all();                 // wake every worker at once
+
+    for (auto& w : workers) w.join();
+}
+`
+};
+
+/* ================= 10. semaphore ================= */
+scenarios.semaphore = {
+  tab: 'semaphore',
+  title: 'std::counting_semaphore — a pool of N permits',
+  desc: 'Unlike a mutex, a semaphore has no single "owner" — any thread can acquire or release a permit, and more than one holder is allowed at once.',
+  svgH: 420,
+  steps: [
+    '<b>Worker A</b> calls <code class="inline">connectionPool.acquire()</code> on a semaphore initialized with 3 permits — succeeds immediately, permits: 3 → 2.',
+    '<b>Worker B</b> also calls <code class="inline">.acquire()</code> at the same time — also succeeds, permits: 2 → 1. Both workers now hold a connection <b>concurrently</b> — the key difference from a mutex, which would have blocked B.',
+    'A finishes and calls <code class="inline">.release()</code> — permits: 1 → 2.',
+    'B likewise releases when done — permits: 2 → 3.'
+  ],
+  note: '<b>std::binary_semaphore</b> is <code class="inline">counting_semaphore&lt;1&gt;</code>, typically used as a cross-thread <i>signal</i>: Thread A can call <code class="inline">.release()</code> and Thread B — which never acquired anything itself — can be the one blocked on <code class="inline">.acquire()</code> waiting for that signal. A mutex can\'t do this: whoever locks it must be the one to unlock it.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:300,title:'Worker A',titleColor:'#f4a93b',lines:[
+      'void queryDatabase(id) {',
+      `  ${CN[0]} connectionPool.acquire();`,
+      '     runQuery();',
+      `  ${CN[2]} connectionPool.release();`,
+      '}'
+    ]});
+    const B = codeBox(svg,{x:685,y:60,w:300,title:'Worker B',titleColor:'#c8534f',lines:[
+      'void queryDatabase(id) {',
+      `  ${CN[1]} connectionPool.acquire();`,
+      '     runQuery();',
+      `  ${CN[3]} connectionPool.release();`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:355,y:250,w:290,title:'counting_semaphore<3> connectionPool',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'permits: 3 -> 2 -> 1 -> 2 -> 3',
+      'A and B hold permits simultaneously'
+    ]});
+    arrow(svg, A.anchorRight(1), M.anchorTop(), '#f4a93b');
+    arrow(svg, B.anchorLeft(1), M.anchorTop(), '#c8534f');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <semaphore>
+#include <vector>
+#include <chrono>
+
+std::counting_semaphore<3> connectionPool(3);  // 3 connections available
+
+void queryDatabase(int id) {
+    connectionPool.acquire();
+    std::cout << "Worker " << id << " got a connection\\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    connectionPool.release();
+    std::cout << "Worker " << id << " released its connection\\n";
+}
+
+int main() {
+    std::vector<std::thread> workers;
+    for (int i = 0; i < 6; ++i) workers.emplace_back(queryDatabase, i);
+    for (auto& w : workers) w.join();
+}
+`
+};
+
+/* ================= 11. latch ================= */
+scenarios.latch = {
+  tab: 'latch',
+  title: 'std::latch — one-shot countdown gate',
+  desc: 'Three subsystems must all finish initializing before the server starts — a single-use rendezvous point.',
+  svgH: 420,
+  steps: [
+    'Each of the <b>3 subsystem threads</b> initializes independently and in parallel.',
+    'Each calls <code class="inline">startupComplete.count_down()</code> when finished — the internal counter decrements by 1 per call.',
+    '<b>Main thread</b> calls <code class="inline">startupComplete.wait()</code> — blocks as long as the counter is above zero.',
+    'Once all 3 have called count_down(), the counter hits 0 and main\'s wait() returns.',
+    'Main proceeds — e.g. starting the server.'
+  ],
+  note: '<b>latch vs barrier:</b> a latch is single-use — once the counter hits 0 it can never be reset or reused for another round. Need repeated synchronization points (phase 1, phase 2, phase 3…)? That\'s std::barrier, next tab.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:330,title:'Subsystems 1..3 (parallel)',titleColor:'#f4a93b',lines:[
+      'void initSubsystem(name) {',
+      `  ${CN[0]} setup(name);`,
+      `  ${CN[1]} startupComplete.count_down();`,
+      '}'
+    ]});
+    const B = codeBox(svg,{x:655,y:60,w:330,title:'Main thread',titleColor:'#c8534f',lines:[
+      'void main() {',
+      `  ${CN[2]} startupComplete.wait();`,
+      `  ${CN[4]} startServer();`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:340,y:230,w:320,title:'std::latch startupComplete(3)',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'counter: 3 -> 2 -> 1 -> 0',
+      `${CN[3]} main unblocks once counter = 0`
+    ]});
+    arrow(svg, A.anchorRight(1), M.anchorTop(), '#f4a93b');
+    arrow(svg, B.anchorLeft(1), M.anchorTop(), '#c8534f', true);
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <latch>
+#include <vector>
+#include <string>
+
+std::latch startupComplete(3);
+
+void initSubsystem(const std::string& name) {
+    std::cout << name << " initializing...\\n";
+    startupComplete.count_down();
+}
+
+int main() {
+    std::vector<std::thread> subsystems;
+    subsystems.emplace_back(initSubsystem, "Network");
+    subsystems.emplace_back(initSubsystem, "Database");
+    subsystems.emplace_back(initSubsystem, "Cache");
+
+    startupComplete.wait();               // main blocks here
+    std::cout << "All subsystems ready - starting server\\n";
+
+    for (auto& t : subsystems) t.join();
+}
+`
+};
+
+/* ================= 12. barrier ================= */
+scenarios.barrier = {
+  tab: 'barrier',
+  title: 'std::barrier — reusable multi-phase sync point',
+  desc: 'A fixed group of worker threads must all finish each generation before any starts the next — repeated across many phases.',
+  svgH: 400,
+  steps: [
+    'Every worker in the group finishes its work for <b>generation N</b>.',
+    'Each calls <code class="inline">syncPoint.arrive_and_wait()</code> — blocks until <b>all</b> participants have arrived.',
+    'Once everyone has arrived, the completion function runs ("generation complete"), then <b>all</b> workers are released together.',
+    'The barrier automatically resets — the same workers immediately start <b>generation N+1</b> and repeat the rendezvous.'
+  ],
+  note: 'This is the difference from <code class="inline">std::latch</code>: a barrier is reusable across many synchronization rounds with the same set of threads, and can run a completion callback between phases. <code class="inline">.arrive_and_drop()</code> lets a thread permanently leave the group early.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:200,y:60,w:600,title:'Workers 1..N (all participants of the barrier)',titleColor:'#f4a93b',lines:[
+      'void simulate(id) {',
+      '  for (gen : generations) {',
+      `    ${CN[0]} computeGeneration(id, gen);`,
+      `    ${CN[1]} syncPoint.arrive_and_wait();`,
+      '  }',
+      '}'
+    ]});
+    const M = codeBox(svg,{x:340,y:280,w:320,title:'std::barrier syncPoint(N)',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      `${CN[2]} completion fn runs, then releases all`,
+      `${CN[3]} auto-resets for the next generation`
+    ]});
+    arrow(svg, A.anchorBottom(), M.anchorTop(), '#f4a93b');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <barrier>
+#include <vector>
+
+int main() {
+    constexpr int numWorkers = 4;
+    std::barrier syncPoint(numWorkers, [] {
+        std::cout << "-- generation complete --\\n";
+    });
+
+    auto simulate = [&](int id) {
+        for (int gen = 0; gen < 3; ++gen) {
+            std::cout << "Worker " << id << " computing generation " << gen << '\\n';
+            syncPoint.arrive_and_wait();   // wait for all 4 before next generation
+        }
+    };
+
+    std::vector<std::thread> workers;
+    for (int i = 0; i < numWorkers; ++i) workers.emplace_back(simulate, i);
+    for (auto& w : workers) w.join();
+}
+`
+};
+
+/* ================= 13. jthread + stop_token ================= */
+scenarios.jthread = {
+  tab: 'jthread + stop_token',
+  title: 'std::jthread — auto-joining threads with cooperative cancellation',
+  desc: 'jthread joins automatically in its destructor, and can pass a stop_token so the running function knows when to stop cleanly.',
+  svgH: 440,
+  steps: [
+    '<b>Main thread</b> constructs a <code class="inline">jthread</code> from a function that takes a <code class="inline">stop_token</code> — supplied automatically.',
+    'The <b>worker</b> loops, checking <code class="inline">st.stop_requested()</code> each iteration instead of running unconditionally.',
+    'Main sleeps a while, letting the worker poll in the background.',
+    'Main calls <code class="inline">t.request_stop()</code> — sets the stop flag; does <b>not</b> forcibly kill the thread.',
+    'The worker\'s loop condition sees the flag on its next check and exits cleanly, running cleanup.',
+    'If main never called request_stop() explicitly, <code class="inline">t</code>\'s <b>destructor</b> does it automatically, then joins — fixing the #1 std::thread foot-gun.'
+  ],
+  note: 'With plain <code class="inline">std::thread</code>, forgetting <code class="inline">.join()</code>/<code class="inline">.detach()</code> before the thread object is destroyed calls <code class="inline">std::terminate()</code>. jthread makes that impossible by design.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:330,title:'Main thread',titleColor:'#f4a93b',lines:[
+      'void main() {',
+      `  ${CN[0]} jthread t(pollSensor);`,
+      `  ${CN[2]} sleep_for(700ms);`,
+      `  ${CN[3]} t.request_stop();`,
+      `  ${CN[5]} // } destructor also stops+joins`,
+      '}'
+    ]});
+    const B = codeBox(svg,{x:655,y:60,w:330,title:'pollSensor(stop_token st)',titleColor:'#c8534f',lines:[
+      'void pollSensor(stop_token st) {',
+      `  ${CN[1]} while (!st.stop_requested()) {`,
+      '       readSensor();',
+      '     }',
+      `  ${CN[4]} cleanup();  // clean exit`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:340,y:240,w:320,title:'stop_token / stop_source',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'shared cancellation flag'
+    ]});
+    arrow(svg, A.anchorRight(3), M.anchorTop(), '#f4a93b');
+    arrow(svg, M.anchorTop(), B.anchorLeft(1), '#c8534f');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <stop_token>
+
+void pollSensor(std::stop_token st) {
+    while (!st.stop_requested()) {
+        std::cout << "Reading sensor...\\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    }
+    std::cout << "Sensor thread cleaning up\\n";
+}
+
+int main() {
+    {
+        std::jthread t(pollSensor);
+        std::this_thread::sleep_for(std::chrono::milliseconds(700));
+        t.request_stop();                 // ask it to stop
+    }                                       // destructor also stops+joins if not already
+    std::cout << "Main continues\\n";
+}
+`
+};
+
+/* ================= 14. this_thread + thread_local ================= */
+scenarios.this_thread = {
+  tab: 'this_thread + thread_local',
+  title: 'std::this_thread &amp; thread_local — per-thread identity and state',
+  desc: 'Every thread has its own private copy of a thread_local variable, and this_thread gives it a way to inspect/pause itself.',
+  svgH: 420,
+  steps: [
+    'Each worker thread starts a loop and increments its <b>own</b> copy of <code class="inline">requestsHandled</code> — declared <code class="inline">thread_local</code>, so no two threads share it.',
+    'Between iterations it calls <code class="inline">std::this_thread::sleep_for(50ms)</code> to simulate waiting on I/O.',
+    'After the loop, it reads <code class="inline">std::this_thread::get_id()</code> to identify itself in the log line.',
+    'Each thread prints its own count — always 3, but stored completely independently per thread, unlike a plain global <code class="inline">int</code> would be.'
+  ],
+  note: '<code class="inline">std::this_thread::yield()</code> (not shown) is a related hint: "let another ready thread run now" — useful in busy-wait/spin loops (see the atomic_flag spinlock tab) so they don\'t hog a core needlessly.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:120,y:60,w:760,title:'Worker 1..3 (each has its own requestsHandled)',titleColor:'#f4a93b',lines:[
+      'void handleRequests(id) {',
+      '  for (i = 0; i < 3; ++i) {',
+      `    ${CN[0]} ++requestsHandled;  // thread_local`,
+      `    ${CN[1]} this_thread::sleep_for(50ms);`,
+      '  }',
+      `  ${CN[2]} cout << id << " (" << this_thread::get_id() << ") handled " << requestsHandled;`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:340,y:250,w:320,title:'thread_local storage',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      `${CN[3]} each thread: its own separate int`
+    ]});
+    arrow(svg, A.anchorBottom(), M.anchorTop(), '#f4a93b');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <vector>
+
+thread_local int requestsHandled = 0;   // separate copy per thread
+
+void handleRequests(int id) {
+    for (int i = 0; i < 3; ++i) {
+        ++requestsHandled;
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));  // simulate I/O wait
+    }
+    std::cout << "Thread " << id << " (" << std::this_thread::get_id()
+              << ") handled " << requestsHandled << " requests\\n";
+}
+
+int main() {
+    std::vector<std::thread> threads;
+    for (int i = 0; i < 3; ++i) threads.emplace_back(handleRequests, i);
+    for (auto& t : threads) t.join();
+}
+`
+};
+
+/* ================= 15. atomic ================= */
+scenarios.atomic = {
+  tab: 'std::atomic',
+  title: 'std::atomic — lock-free operations',
+  desc: 'No mutex is ever locked here — the hardware guarantees these individual operations are indivisible.',
+  svgH: 420,
+  steps: [
+    '<b>Thread A</b> calls <code class="inline">requestCount.fetch_add(1)</code> — an atomic read-modify-write, safe with no lock at all.',
+    '<b>Thread B</b> reads the current max with <code class="inline">maxLatencyMs.load()</code>.',
+    'B computes a candidate new max, then calls <code class="inline">compare_exchange_weak(current, latency)</code>: "only update if the value is still what I read."',
+    'If another thread changed the value in between, the compare fails, <code class="inline">current</code> is refreshed automatically, and B\'s <code class="inline">while</code> loop retries step 3.',
+    'Once no one interfered, the compare succeeds and the new max is written atomically.'
+  ],
+  note: '<code class="inline">compare_exchange_weak</code> may fail spuriously even when the value matches (cheaper on some CPU architectures) — use it in retry loops like this one. Use <code class="inline">compare_exchange_strong</code> when you can\'t easily loop.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:300,title:'Thread A',titleColor:'#f4a93b',lines:[
+      'void recordRequest() {',
+      `  ${CN[0]} requestCount.fetch_add(1);`,
+      '}'
+    ]});
+    const B = codeBox(svg,{x:685,y:60,w:300,title:'Thread B',titleColor:'#c8534f',lines:[
+      'void recordLatency(latency) {',
+      `  ${CN[1]} int current = maxLatencyMs.load();`,
+      `  ${CN[2]} while (latency > current &&`,
+      '       !maxLatencyMs.compare_exchange',
+      '         _weak(current, latency)) {',
+      `  ${CN[3]}   // current refreshed, retry`,
+      '     }',
+      `  ${CN[4]} // success`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:355,y:280,w:290,title:'atomic<long> / atomic<int>',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'no lock — hardware-level atomic ops'
+    ]});
+    arrow(svg, A.anchorRight(1), M.anchorTop(), '#f4a93b');
+    arrow(svg, B.anchorLeft(1), M.anchorTop(), '#c8534f');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <atomic>
+#include <vector>
+
+std::atomic<long> requestCount{0};
+std::atomic<int> maxLatencyMs{0};
+
+void recordLatency(int latency) {
+    requestCount.fetch_add(1, std::memory_order_relaxed);
+
+    int current = maxLatencyMs.load(std::memory_order_relaxed);
+    while (latency > current &&
+           !maxLatencyMs.compare_exchange_weak(current, latency,
+                                                std::memory_order_relaxed)) {
+        // current was refreshed by compare_exchange_weak; loop retries
+    }
+}
+
+int main() {
+    std::vector<std::thread> threads;
+    for (int i = 0; i < 8; ++i)
+        threads.emplace_back(recordLatency, (i * 37) % 100);
+    for (auto& t : threads) t.join();
+
+    std::cout << "Requests: " << requestCount << ", max latency: " << maxLatencyMs << "ms\\n";
+}
+`
+};
+
+/* ================= 16. atomic_flag / spinlock ================= */
+scenarios.atomic_flag = {
+  tab: 'atomic_flag / spinlock',
+  title: 'std::atomic_flag — building a spinlock from the lowest-level primitive',
+  desc: 'atomic_flag is the only atomic type guaranteed lock-free on every platform — the building block mutexes are often implemented on top of.',
+  svgH: 420,
+  steps: [
+    '<b>Thread A</b> calls <code class="inline">spin.lock()</code> — internally, <code class="inline">test_and_set()</code> atomically sets the flag and returns its <b>previous</b> value. If it was already set, A spins (busy-waits) in a tight loop.',
+    'Flag was clear, so A gets it immediately and enters the critical section.',
+    '<b>Thread B</b> calls <code class="inline">spin.lock()</code> too — <code class="inline">test_and_set()</code> returns <b>true</b> (already set), so B keeps looping, burning CPU instead of sleeping.',
+    'A finishes and calls <code class="inline">spin.unlock()</code>, which calls <code class="inline">flag_.clear()</code>.',
+    'B\'s next <code class="inline">test_and_set()</code> call now returns false — B acquires the lock and stops spinning.'
+  ],
+  note: 'Spinlocks beat a real mutex only when the critical section is extremely short and contention is low — a thread blocked on a mutex sleeps (context switch), while a spinning thread keeps burning a core the whole time. For anything longer than a few instructions, use <code class="inline">std::mutex</code> instead.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:20,y:60,w:300,title:'Thread A',titleColor:'#f4a93b',lines:[
+      'void incrementFast() {',
+      `  ${CN[0]} spin.lock();`,
+      `  ${CN[1]} ++counter;`,
+      `  ${CN[3]} spin.unlock();`,
+      '}'
+    ]});
+    const B = codeBox(svg,{x:680,y:60,w:300,title:'Thread B',titleColor:'#c8534f',lines:[
+      'void incrementFast() {',
+      `  ${CN[2]} spin.lock();  // busy-waits here`,
+      '     ++counter;',
+      `  ${CN[4]} spin.unlock();`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:355,y:220,w:290,title:'atomic_flag flag_ (inside SpinLock)',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'test_and_set() / clear()',
+      'no OS blocking — pure busy-wait'
+    ]});
+    arrow(svg, A.anchorRight(1), M.anchorTop(), '#f4a93b');
+    arrow(svg, B.anchorLeft(1), M.anchorTop(), '#c8534f', true);
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <atomic>
+
+class SpinLock {
+public:
+    void lock() {
+        while (flag_.test_and_set(std::memory_order_acquire)) {
+            // busy-wait - fine only for very short critical sections
+        }
+    }
+    void unlock() { flag_.clear(std::memory_order_release); }
+
+private:
+    std::atomic_flag flag_ = ATOMIC_FLAG_INIT;
+};
+
+SpinLock spin;
+int counter = 0;
+
+void incrementFast() {
+    for (int i = 0; i < 100000; ++i) {
+        spin.lock();
+        ++counter;
+        spin.unlock();
+    }
+}
+
+int main() {
+    std::thread a(incrementFast), b(incrementFast);
+    a.join(); b.join();
+    std::cout << "Counter: " << counter << '\\n';   // always 200000
+}
+`
+};
+
+/* ================= 17. memory_order ================= */
+scenarios.memory_order = {
+  tab: 'memory_order',
+  title: 'std::memory_order — publishing data safely between threads',
+  desc: 'A release/acquire pair is how one thread hands ordinary (non-atomic) data to another safely, without a mutex.',
+  svgH: 420,
+  steps: [
+    '<b>Loader thread</b> builds a whole <code class="inline">Config</code> object off to the side — completely ordinary, non-atomic writes.',
+    'It then does <code class="inline">globalConfig.store(cfg, memory_order_release)</code> — this stops the compiler/CPU from reordering the object\'s construction to happen <i>after</i> this store.',
+    '<b>Worker thread</b> spins on <code class="inline">globalConfig.load(memory_order_acquire)</code> until it sees a non-null pointer.',
+    'Because acquire "syncs-with" that specific release, the worker is now guaranteed to see the <b>fully constructed</b> Config — not a partially-written one.'
+  ],
+  note: 'The default, <code class="inline">memory_order_seq_cst</code>, gives this same safety everywhere with a simpler mental model but more overhead. <code class="inline">memory_order_relaxed</code> gives no ordering guarantee at all — using it here could let the worker see the pointer as non-null while still observing an incompletely-constructed object.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:320,title:'Loader thread',titleColor:'#f4a93b',lines:[
+      'void loaderThread() {',
+      `  ${CN[0]} Config* cfg = new Config{5000};`,
+      `  ${CN[1]} globalConfig.store(cfg,`,
+      '        memory_order_release);',
+      '}'
+    ]});
+    const B = codeBox(svg,{x:665,y:60,w:320,title:'Worker thread',titleColor:'#c8534f',lines:[
+      'void workerThread() {',
+      `  ${CN[2]} while (!(cfg = globalConfig.load(`,
+      '        memory_order_acquire))) yield();',
+      `  ${CN[3]} use(cfg->timeoutMs);  // guaranteed safe`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:340,y:250,w:320,title:'atomic<Config*> globalConfig',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'release/acquire "syncs-with"',
+      'and orders the surrounding plain writes/reads'
+    ]});
+    arrow(svg, A.anchorRight(2), M.anchorTop(), '#f4a93b');
+    arrow(svg, M.anchorTop(), B.anchorLeft(1), '#c8534f');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <atomic>
+
+struct Config { int timeoutMs; };
+
+std::atomic<Config*> globalConfig{nullptr};
+
+void loaderThread() {
+    Config* cfg = new Config{5000};                       // build off to the side
+    globalConfig.store(cfg, std::memory_order_release);    // publish
+}
+
+void workerThread() {
+    Config* cfg;
+    while (!(cfg = globalConfig.load(std::memory_order_acquire))) {
+        std::this_thread::yield();                          // spin until published
+    }
+    std::cout << "Using timeout: " << cfg->timeoutMs << "ms\\n"; // safe: fully constructed
+}
+
+int main() {
+    std::thread loader(loaderThread);
+    std::thread worker(workerThread);
+    loader.join();
+    worker.join();
+}
+`
+};
+
+/* ================= 18. future / promise ================= */
+scenarios.future = {
+  tab: 'future / promise',
+  title: 'std::promise + std::future — a one-shot result channel',
+  desc: 'promise is the write end, future is the read end — including how exceptions propagate across the thread boundary.',
+  svgH: 440,
+  steps: [
+    '<b>Main thread</b> creates a <code class="inline">promise&lt;int&gt;</code> and gets its matching <code class="inline">future&lt;int&gt;</code> via <code class="inline">get_future()</code>.',
+    'Main launches a worker thread, moving the promise into it (a promise can\'t be copied).',
+    'Main calls <code class="inline">fut.get()</code> — this <b>blocks</b> until the promise is fulfilled.',
+    '<b>Worker</b> tries to compute a result, but the input is invalid and throws.',
+    'The catch block calls <code class="inline">prom.set_exception(std::current_exception())</code> instead of set_value() — capturing the failure to send back.',
+    'Main\'s <code class="inline">.get()</code> <b>rethrows</b> that exact exception on the main thread, where it\'s caught normally.'
+  ],
+  note: '<code class="inline">.get()</code> can only be called <b>once</b> on a future. Need several consumers to each read the same result? Call <code class="inline">fut.share()</code> to get a <code class="inline">shared_future</code>, which is copyable and can be <code class="inline">.get()</code>-ed from multiple places.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:15,y:60,w:340,title:'Main thread',titleColor:'#f4a93b',lines:[
+      'void main() {',
+      `  ${CN[0]} promise<int> prom;`,
+      '     future<int> fut = prom.get_future();',
+      `  ${CN[1]} thread t(computeRisky, move(prom), -5);`,
+      '     try {',
+      `  ${CN[2]}   int r = fut.get();  // blocks, rethrows`,
+      '     } catch (exception& e) { log(e); }',
+      '}'
+    ]});
+    const B = codeBox(svg,{x:645,y:60,w:340,title:'Worker thread',titleColor:'#c8534f',lines:[
+      'void computeRisky(prom, input) {',
+      '  try {',
+      `    ${CN[3]} if (input < 0) throw ...;`,
+      '       prom.set_value(input * input);',
+      '  } catch (...) {',
+      `    ${CN[4]} prom.set_exception(`,
+      '         current_exception());',
+      '  }',
+      '}'
+    ]});
+    const M = codeBox(svg,{x:335,y:290,w:330,title:'shared state (inside promise/future)',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      `${CN[5]} main blocks on get() until set_value()`,
+      'or set_exception() fires'
+    ]});
+    arrow(svg, A.anchorRight(2), M.anchorTop(), '#f4a93b', true);
+    arrow(svg, B.anchorLeft(4), M.anchorTop(), '#c8534f');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <future>
+#include <stdexcept>
+
+void computeRisky(std::promise<int> prom, int input) {
+    try {
+        if (input < 0) throw std::invalid_argument("negative input");
+        prom.set_value(input * input);
+    } catch (...) {
+        prom.set_exception(std::current_exception());   // propagate the failure instead
+    }
+}
+
+int main() {
+    std::promise<int> prom;
+    std::future<int> fut = prom.get_future();
+    std::thread t(computeRisky, std::move(prom), -5);
+
+    try {
+        std::cout << "Result: " << fut.get() << '\\n';   // blocks, then rethrows
+    } catch (const std::exception& e) {
+        std::cout << "Worker failed: " << e.what() << '\\n';
+    }
+    t.join();
+}
+`
+};
+
+/* ================= 19. packaged_task ================= */
+scenarios.packaged_task = {
+  tab: 'packaged_task',
+  title: 'std::packaged_task — wrapping any callable into the future machinery',
+  desc: 'Instead of manually creating a promise, packaged_task wraps a function so calling it automatically deposits its return value into a future.',
+  svgH: 380,
+  steps: [
+    'Wrap an ordinary function in <code class="inline">packaged_task&lt;int(int,int)&gt; task(add)</code>.',
+    'Get its future <b>before</b> the task ever runs, via <code class="inline">task.get_future()</code>.',
+    'Move the task onto a new thread along with its arguments — invoking it calls <code class="inline">add(3, 4)</code> internally and captures the return value.',
+    'Calling <code class="inline">fut.get()</code> retrieves the result (7) once the task finishes — exactly like the manual promise/future pattern, but with none of the boilerplate.'
+  ],
+  note: 'This is exactly what a real thread-pool\'s <code class="inline">submit()</code> uses internally to hand callers back a <code class="inline">future</code> for arbitrary queued work.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:120,y:60,w:760,title:'Main thread',titleColor:'#f4a93b',lines:[
+      'void main() {',
+      `  ${CN[0]} packaged_task<int(int,int)> task(add);`,
+      `  ${CN[1]} future<int> fut = task.get_future();`,
+      `  ${CN[2]} thread t(move(task), 3, 4);   // runs add(3,4) on a new thread`,
+      `  ${CN[3]} int result = fut.get();          // = 7`,
+      '     t.join();',
+      '}'
+    ]});
+    const M = codeBox(svg,{x:340,y:250,w:320,title:'packaged_task internals',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'wraps a promise + the callable together'
+    ]});
+    arrow(svg, A.anchorBottom(), M.anchorTop(), '#f4a93b');
+  },
+  fullCode: `
+#include <iostream>
+#include <thread>
+#include <future>
+
+int add(int a, int b) { return a + b; }
+
+int main() {
+    std::packaged_task<int(int, int)> task(add);
+    std::future<int> result = task.get_future();
+
+    std::thread worker(std::move(task), 3, 4);   // runs add(3, 4) on a new thread
+    std::cout << "3 + 4 = " << result.get() << '\\n';
+    worker.join();
+}
+`
+};
+
+/* ================= 20. async ================= */
+scenarios.async = {
+  tab: 'std::async',
+  title: 'std::async — the highest-level task launcher',
+  desc: 'Launch policies decide whether async actually gives you a new thread, or just defers the work until you ask for it.',
+  svgH: 400,
+  steps: [
+    '<code class="inline">std::async(launch::async, processTile, 0)</code> — the <b>async</b> policy guarantees a new thread starts running immediately.',
+    'A loop launches several more tiles the same way, all running in parallel.',
+    'Calling <code class="inline">f.get()</code> on each future simply waits for that already-running (or already-finished) task.',
+    'If a <code class="inline">launch::deferred</code> future were used instead, <code class="inline">.get()</code> would be what actually <b>triggers</b> the computation — synchronously, on the calling thread, right there.'
+  ],
+  note: 'Calling <code class="inline">std::async</code> with <b>no</b> launch policy lets the implementation pick async <i>or</i> deferred — a common footgun, since a "concurrent-looking" call might silently never run on a separate thread at all. Prefer being explicit.',
+  draw(svg, codeBox, arrow){
+    const A = codeBox(svg,{x:80,y:60,w:840,title:'Caller',titleColor:'#f4a93b',lines:[
+      'void processAllTiles() {',
+      '  vector<future<int>> results;',
+      `  ${CN[0]} for (i = 0; i < 4; ++i)`,
+      `  ${CN[1]}   results.push_back(async(launch::async, processTile, i));`,
+      '  for (auto& f : results)',
+      `    ${CN[2]}${CN[3]} cout << f.get();  // waits for each tile\u2019s thread`,
+      '}'
+    ]});
+    const M = codeBox(svg,{x:340,y:250,w:320,title:'launch policy',titleColor:'#5b6b7c',titleTextColor:'#fff',bodyColor:'#c7d3de',lines:[
+      'async = new thread now',
+      'deferred = runs lazily on .get()'
+    ]});
+    arrow(svg, A.anchorBottom(), M.anchorTop(), '#f4a93b');
+  },
+  fullCode: `
+#include <iostream>
+#include <future>
+#include <vector>
+
+int processTile(int tileId) {
+    // simulate work
+    return tileId * tileId;
+}
+
+int main() {
+    std::vector<std::future<int>> results;
+    for (int i = 0; i < 4; ++i)
+        results.push_back(std::async(std::launch::async, processTile, i));
+
+    for (auto& f : results)
+        std::cout << "Tile result: " << f.get() << '\\n';
+}
+`
+};
+
+/* ============ WIRE UP TABS ============ */
+const tabsEl = document.getElementById('tabs');
+const panel = document.getElementById('panel');
+const order = ['thread_basics','mutex','unique_lock','recursive','timed','shared','scoped','call_once','cv','cv_any','semaphore','latch','barrier','jthread','this_thread','atomic','atomic_flag','memory_order','future','packaged_task','async'];
+
+order.forEach((key, i) => {
+  const t = document.createElement('div');
+  t.className = 'tab' + (i===0 ? ' active' : '');
+  t.textContent = scenarios[key].tab;
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    show(key);
+  });
+  tabsEl.appendChild(t);
+});
+
+function show(key){
+  renderScenario(panel, scenarios[key]);
+}
+show(order[0]);
+</script>
+</body>
+</html>

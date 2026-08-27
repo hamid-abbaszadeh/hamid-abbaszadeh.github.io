@@ -1,24 +1,27 @@
 ---
 layout: default
-title: The Different C++ Memory Models
+title: "<span style='color: #4ade80;'>The Different C++ Memory Models</span>"
 parent: C++ Memory Model
 grand_parent: Multithreading
 nav_order: 7
 ---
 
+
 # The Different C++ Memory Models
-{: .no_toc }
 
-## Table of Contents
-{: .no_toc .text-delta }
+A comprehensive comparison of Sequential Consistency, Acquire-Release, and Relaxed memory orderings, along with optimal wait-and-sleep concurrency strategies.
 
-1. TOC
-{:toc}
+---
 
-## 1. Overview
 
-_TODO: write introduction for "The Different C++ Memory Models"._
+## Overview & Core Foundations
 
-## 2. Details
+Concurrent operations in modern C++ require precise control over memory ordering to prevent data races and balance performance against correctness[cite: 1, 2]. The C++ memory model categorizes operations into three primary ordering semantics[cite: 1, 2]:
 
-_TODO: expand this section._
+<div class="code-example" markdown="1">
+1. **Sequential Consistency (`memory_order_seq_cst`)**: Guarantees a single, global execution order across all threads[cite: 1, 2].
+2. **Acquire-Release Semantics (`acquire`, `release`, `acq_rel`)**: Establishes pairwise thread synchronization without global ordering[cite: 1, 2].
+3. **Relaxed Semantics (`memory_order_relaxed`)**: Guarantees atomic modifications on individual variables without cross-thread ordering constraints[cite: 1, 2].
+4. **Wait and Sleep Concurrency Strategies**: When waiting on atomic state changes across threads, selecting the proper waiting mechanism avoids excessive CPU usage while minimizing latency.
+</div>
+

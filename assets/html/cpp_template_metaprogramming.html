@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>C++ template metaprogramming — inspector &amp; guard</title>
+<style>
+  :root{
+    --bg:#0f1115;
+    --panel:#171a21;
+    --panel-2:#1e222b;
+    --border:#2b303b;
+    --border-strong:#3a4152;
+    --text:#e7e9ee;
+    --text-secondary:#a3aab8;
+    --text-muted:#6b7280;
+    --accent:#5b8def;
+    --accent-bg:#182338;
+    --mono:#c9d1e3;
+    --success-bg:#123626;
+    --success-text:#3fd68e;
+    --danger-bg:#3a1a1e;
+    --danger-text:#f16a75;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  :root[data-theme="light"]{
+    --bg:#f5f6f8;
+    --panel:#ffffff;
+    --panel-2:#f0f2f5;
+    --border:#e0e3e8;
+    --border-strong:#c7ccd6;
+    --text:#1b1f27;
+    --text-secondary:#5b6270;
+    --text-muted:#8890a0;
+    --accent:#2f6feb;
+    --accent-bg:#eaf1ff;
+    --mono:#33394a;
+    --success-bg:#e6f7ee;
+    --success-text:#1a9c5f;
+    --danger-bg:#fdeced;
+    --danger-text:#d23c47;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f5f6f8;
+      --panel:#ffffff;
+      --panel-2:#f0f2f5;
+      --border:#e0e3e8;
+      --border-strong:#c7ccd6;
+      --text:#1b1f27;
+      --text-secondary:#5b6270;
+      --text-muted:#8890a0;
+      --accent:#2f6feb;
+      --accent-bg:#eaf1ff;
+      --mono:#33394a;
+      --success-bg:#e6f7ee;
+      --success-text:#1a9c5f;
+      --danger-bg:#fdeced;
+      --danger-text:#d23c47;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-sans);
+    padding:2.5rem 1.5rem;
+  }
+  .wrap{max-width:960px;margin:0 auto;}
+  h1{
+    font-size:1.4rem;
+    font-weight:600;
+    margin:0 0 1.5rem;
+    line-height:1.4;
+  }
+  .theme-toggle{
+    position:fixed;
+    top:1rem; right:1rem;
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text-secondary);
+    border-radius:8px;
+    padding:6px 10px;
+    font-size:12px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+  }
+  .theme-toggle:hover{border-color:var(--border-strong);}
+  .theme-toggle svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .btn-row{display:flex;gap:8px;margin-bottom:2rem;flex-wrap:wrap;}
+  .type-btn{
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:8px;
+    padding:8px 16px;
+    font-size:14px;
+    font-family:var(--font-mono);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .type-btn:hover{border-color:var(--border-strong);}
+  .type-btn.active{
+    border-color:var(--accent);
+    background:var(--accent-bg);
+    color:var(--accent);
+  }
+  .section-label{
+    font-size:14px;
+    font-weight:600;
+    margin:0 0 10px;
+    color:var(--text);
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  @media (max-width:600px){ .grid{grid-template-columns:1fr;} }
+  .box{
+    background:var(--panel);
+    border:1.5px solid var(--border);
+    border-radius:12px;
+    padding:1rem 1.1rem;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .box.winner{
+    border-color:var(--accent);
+    box-shadow:0 0 0 1px var(--accent);
+  }
+  .box-label{
+    font-size:12px;
+    color:var(--text-muted);
+    margin-bottom:8px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  .code{
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--mono);
+    background:var(--panel-2);
+    border-radius:6px;
+    padding:10px 12px;
+    line-height:1.6;
+    overflow-x:auto;
+    white-space:pre;
+  }
+  .box-note{
+    font-size:12px;
+    color:var(--text-muted);
+    margin-top:10px;
+    line-height:1.5;
+  }
+  .layer-note{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin:4px 0 2.2rem;
+    line-height:1.6;
+    min-height:1.6em;
+  }
+  .guard-code{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:1rem 1.1rem;
+    margin-bottom:12px;
+  }
+  .gate-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:8px;
+  }
+  .gate-icon{
+    width:32px; height:32px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    transition:background .2s, color .2s;
+  }
+  .gate-icon i{font-size:18px;}
+  .gate-icon.pass{background:var(--success-bg); color:var(--success-text);}
+  .gate-icon.fail{background:var(--danger-bg); color:var(--danger-text);}
+  .gate-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+  .gate-text{font-size:13px; color:var(--text-secondary); line-height:1.5;}
+  .footnote{
+    font-size:12px;
+    color:var(--text-muted);
+    margin-top:10px;
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()"><span id="theme-icon"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></span><span id="theme-label">Dark</span></button>
+
+<div class="wrap">
+  <h1>Interactive diagram of C++ template metaprogramming: primary template fallback with partial specialization, and SFINAE as a compile-time guard</h1>
+
+  <div class="btn-row">
+    <button class="type-btn active" id="btn-int" onclick="pick('int')">int</button>
+    <button class="type-btn" id="btn-vec" onclick="pick('vec')">std::vector&lt;int&gt;</button>
+    <button class="type-btn" id="btn-ptr" onclick="pick('ptr')">int*</button>
+    <button class="type-btn" id="btn-custom" onclick="pick('custom')">MyClass</button>
+  </div>
+
+  <div class="section-label">Layer 1 — the inspector</div>
+  <div class="grid">
+    <div class="box" id="box-primary">
+      <div class="box-label">primary template</div>
+      <div class="code">template&lt;typename T&gt;
+struct Trait { ... };</div>
+      <div class="box-note">default fallback — used when nothing more specific matches</div>
+    </div>
+    <div class="box" id="box-partial">
+      <div class="box-label">partial specialization</div>
+      <div class="code" id="partial-code">template&lt;&gt;
+struct Trait&lt;int&gt; { ... };</div>
+      <div class="box-note">compiler prefers the most specific match it finds</div>
+    </div>
+  </div>
+  <p class="layer-note" id="layer1-note"></p>
+
+  <div class="section-label">Layer 2 — the security guard (SFINAE)</div>
+  <div class="guard-code">
+    <div class="code">template&lt;typename T, typename = std::enable_if_t&lt;has_toString&lt;T&gt;::value&gt;&gt;
+void process(T val) { val.toString(); }</div>
+  </div>
+  <div class="gate-row">
+    <div class="gate-icon" id="gate-icon"></div>
+    <div class="gate-text" id="layer2-note"></div>
+  </div>
+  <div class="footnote">Substitution Failure Is Not An Error: if the type fails the check, the compiler quietly removes this overload from candidates instead of erroring — as if it were never written.</div>
+</div>
+
+<script>
+const data = {
+  int: {
+    partial: 'template&lt;&gt;\nstruct Trait&lt;int&gt; { ... };',
+    winner: 'primary',
+    note: 'int matches no specialization, so the compiler falls back to the primary template.',
+    gate: false,
+    gateNote: 'int has no toString() member — enable_if_t fails, SFINAE removes process() from the overload set. Passing an int here is a compile error.'
+  },
+  vec: {
+    partial: 'template&lt;typename T&gt;\nstruct Trait&lt;std::vector&lt;T&gt;&gt; { ... };',
+    winner: 'partial',
+    note: 'std::vector&lt;int&gt; matches the vector partial specialization exactly — it wins over the generic fallback.',
+    gate: false,
+    gateNote: 'std::vector has no toString() either — same SFINAE rejection as int.'
+  },
+  ptr: {
+    partial: 'template&lt;typename T&gt;\nstruct Trait&lt;T*&gt; { ... };',
+    winner: 'partial',
+    note: 'int* matches the pointer partial specialization — more specific than the primary template.',
+    gate: false,
+    gateNote: 'Raw pointers have no toString() member — the guard blocks it too.'
+  },
+  custom: {
+    partial: 'template&lt;&gt;\nstruct Trait&lt;MyClass&gt; { ... };',
+    winner: 'primary',
+    note: 'Assume no specialization was written for MyClass — it falls back to the primary template, same as int.',
+    gate: true,
+    gateNote: 'MyClass defines toString() — has_toString<T>::value is true, enable_if_t succeeds, process() compiles normally.'
+  }
+};
+
+function pick(key){
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + key).classList.add('active');
+
+  const d = data[key];
+  document.getElementById('partial-code').innerHTML = d.partial;
+
+  document.getElementById('box-primary').classList.toggle('winner', d.winner === 'primary');
+  document.getElementById('box-partial').classList.toggle('winner', d.winner === 'partial');
+
+  document.getElementById('layer1-note').textContent = d.note;
+  document.getElementById('layer2-note').textContent = d.gateNote;
+
+  const icon = document.getElementById('gate-icon');
+  const checkSvg = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  const xSvg = '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+  if(d.gate){
+    icon.classList.add('pass'); icon.classList.remove('fail');
+    icon.innerHTML = checkSvg;
+  } else {
+    icon.classList.add('fail'); icon.classList.remove('pass');
+    icon.innerHTML = xSvg;
+  }
+}
+
+function toggleTheme(){
+  const root = document.documentElement;
+  const isLight = root.getAttribute('data-theme') === 'light';
+  const moonSvg = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+  const sunSvg = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+  if(isLight){
+    root.setAttribute('data-theme','dark');
+    document.getElementById('theme-label').textContent = 'Dark';
+    document.getElementById('theme-icon').innerHTML = moonSvg;
+  } else {
+    root.setAttribute('data-theme','light');
+    document.getElementById('theme-label').textContent = 'Light';
+    document.getElementById('theme-icon').innerHTML = sunSvg;
+  }
+}
+
+pick('int');
+</script>
+</body>
+</html>
