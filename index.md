@@ -4,8 +4,7 @@ title: Home
 nav_exclude: true
 permalink: /
 ---
-![]({{ site.baseurl }}/assets/images/hamid.jpg)
-
+<img src="{{ site.baseurl }}/assets/images/hamid.jpg" alt="Hamid" width="300">
 
 <div style="display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:12px;">
   <div>
